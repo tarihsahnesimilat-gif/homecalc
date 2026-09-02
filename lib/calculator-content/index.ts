@@ -29,6 +29,16 @@ import { salesTaxContent } from './sales-tax.ts'
 import { squareRootContent } from './square-root.ts'
 import { timeDurationContent } from './time-duration.ts'
 import { workHoursContent } from './work-hours.ts'
+import { commissionContent } from './commission.ts'
+import { concreteContent } from './concrete.ts'
+import { currencyContent } from './currency.ts'
+import { dateCalculatorContent } from './date-calculator.ts'
+import { debtPayoffContent } from './debt-payoff.ts'
+import { gradeContent } from './grade.ts'
+import { mortgageContent } from './mortgage.ts'
+import { percentageDifferenceContent } from './percentage-difference.ts'
+import { savingsContent } from './savings.ts'
+import { timeZoneContent } from './timezone.ts'
 
 export type {
   CalculatorContent,
@@ -77,6 +87,16 @@ const contentEntries: readonly CalculatorContent[] = [
   fuelCostContent,
   timeDurationContent,
   workHoursContent,
+  commissionContent,
+  concreteContent,
+  currencyContent,
+  dateCalculatorContent,
+  debtPayoffContent,
+  gradeContent,
+  mortgageContent,
+  percentageDifferenceContent,
+  savingsContent,
+  timeZoneContent,
 ]
 
 export const calculatorContent: Readonly<Record<string, CalculatorContent>> =
@@ -117,4 +137,14 @@ export {
   fuelCostContent,
   timeDurationContent,
   workHoursContent,
+  commissionContent,
+  concreteContent,
+  currencyContent,
+  dateCalculatorContent,
+  debtPayoffContent,
+  gradeContent,
+  mortgageContent,
+  percentageDifferenceContent,
+  savingsContent,
+  timeZoneContent,
 }

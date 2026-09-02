@@ -81,6 +81,49 @@ export function toDayNumber({ year, month, day }: CalendarDate): number {
   return era * 146097 + dayOfEra - 719468
 }
 
+/**
+ * The inverse of `toDayNumber`: turns days since 1970-01-01 back into a
+ * calendar date. Pure integer arithmetic, so leap years and century rules fall
+ * out of the algorithm rather than needing special cases.
+ */
+export function fromDayNumber(dayNumber: number): CalendarDate {
+  const shifted = dayNumber + 719468
+  const era = Math.floor(shifted / 146097)
+  const dayOfEra = shifted - era * 146097
+  const yearOfEra = Math.floor(
+    (dayOfEra - Math.floor(dayOfEra / 1460) + Math.floor(dayOfEra / 36524) - Math.floor(dayOfEra / 146096)) / 365,
+  )
+  const year = yearOfEra + era * 400
+  const dayOfYear =
+    dayOfEra - (365 * yearOfEra + Math.floor(yearOfEra / 4) - Math.floor(yearOfEra / 100))
+  const mp = Math.floor((5 * dayOfYear + 2) / 153)
+  const day = dayOfYear - Math.floor((153 * mp + 2) / 5) + 1
+  const month = mp + (mp < 10 ? 3 : -9)
+
+  return { year: month <= 2 ? year + 1 : year, month, day }
+}
+
+/** Adds (or with a negative count, subtracts) whole days from a date. */
+export function addDays(date: CalendarDate, days: number): CalendarDate {
+  return fromDayNumber(toDayNumber(date) + days)
+}
+
+const WEEKDAYS = [
+  'Thursday',
+  'Friday',
+  'Saturday',
+  'Sunday',
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+] as const
+
+/** The weekday of a date. Day 0 of the epoch, 1970-01-01, was a Thursday. */
+export function weekdayName(date: CalendarDate): string {
+  const dayNumber = toDayNumber(date)
+  return WEEKDAYS[((dayNumber % 7) + 7) % 7]
+}
+
 /** Whole days from `start` to `end`. Negative when `end` is earlier. */
 export function differenceInDays(start: CalendarDate, end: CalendarDate): number {
   return toDayNumber(end) - toDayNumber(start)

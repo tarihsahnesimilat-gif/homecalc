@@ -259,6 +259,33 @@ times give zero, not twenty-four hours — someone entering one time twice means
 no elapsed time. Anything longer than a day needs dates, so use the calendar
 helpers in `date-utils.ts` instead.
 
+### Rates the site cannot know
+
+Some calculators need a number that changes constantly and cannot honestly be
+shipped in a static build — an exchange rate is the clearest case. The rule is
+that the user supplies it from a source they trust, and the page says plainly
+that no live or stored rate is used. Never bake in a rate that will be stale
+within hours while still looking authoritative. The Currency Converter shows
+the inverse rate alongside the result, which is the quickest way for someone to
+catch a rate entered the wrong way round.
+
+### Repayment that may never finish
+
+Debt payoff steps through the balance month by month rather than using a closed
+form, which keeps the totals exact and makes the failure case natural: a payment
+that does not exceed the monthly interest never reduces the balance. Reject that
+explicitly — a huge number of months is far less useful than saying the payment
+is too small. `MAXIMUM_MONTHS` is the backstop against an unbounded loop.
+
+### Time zones
+
+`lib/calculations/timezone.ts` uses `Intl` only; there is no timezone library
+and none is needed. Converting a wall-clock time means finding the instant it
+refers to in the source zone, then formatting that instant in the target zone —
+the offset is looked up twice because the offset itself depends on the instant.
+Daylight saving comes from the runtime's own tz data, so accuracy for historical
+dates is whatever that data provides. Say so rather than implying full support.
+
 ### Fuel and unit-bearing inputs
 
 The fuel calculator stays unit-neutral: the user supplies distance, efficiency

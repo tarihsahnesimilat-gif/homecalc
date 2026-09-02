@@ -11,7 +11,6 @@ import {
   liveCalculators,
   plannedCalculators,
   popularCalculators,
-  popularLiveCalculators,
   type CalculatorDefinition,
 } from '@/lib/calculators'
 
@@ -232,9 +231,8 @@ export default function Page() {
               )}
             </div>
             <p className="mt-8 text-sm text-primary-foreground/70">
-              {popularLiveCalculators.length > 0
-                ? `${liveCalculators.length} calculator${liveCalculators.length === 1 ? '' : 's'} available now, ${plannedCalculators.length} on the way.`
-                : `${plannedCalculators.length} calculators on the way.`}
+              {`${liveCalculators.length} calculator${liveCalculators.length === 1 ? '' : 's'} available now`}
+              {plannedCalculators.length > 0 && `, ${plannedCalculators.length} on the way`}.
             </p>
           </div>
         </section>

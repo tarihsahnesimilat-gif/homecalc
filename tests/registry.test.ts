@@ -48,18 +48,26 @@ const LIVE_SLUGS = [
   'fuel-cost-calculator',
   'time-duration-calculator',
   'work-hours-calculator',
+  'percentage-difference-calculator',
+  'grade-calculator',
+  'mortgage-calculator',
+  'savings-calculator',
+  'commission-calculator',
+  'debt-payoff-calculator',
+  'currency-converter',
+  'concrete-calculator',
+  'date-calculator',
+  'time-zone-converter',
 ]
 
-test('registry: thirty live calculators', () => {
-  assert.equal(liveCalculators.length, 30)
+test('registry: forty live calculators', () => {
+  assert.equal(liveCalculators.length, 40)
   assert.deepEqual([...liveCalculators.map((c: CalculatorDefinition) => c.slug)].sort(), [...LIVE_SLUGS].sort())
 })
 
-test('registry: mortgage and grade remain planned', () => {
-  assert.deepEqual(
-    plannedCalculators.map((c: CalculatorDefinition) => c.slug).sort(),
-    ['grade-calculator', 'mortgage-calculator'],
-  )
+test('registry: nothing is left planned', () => {
+  // Mortgage and Grade were the last two, and both went live in v0.9.
+  assert.deepEqual(plannedCalculators.map((c: CalculatorDefinition) => c.slug), [])
 })
 
 test('registry: every href is derived from its slug', () => {
@@ -84,15 +92,15 @@ test('registry: category counts are derived, not hardcoded', () => {
   const counts: Record<string, number> = Object.fromEntries(
     categoriesWithCounts.map((category) => [category.id, category.liveCount]),
   )
-  assert.equal(counts.math, 10)
-  assert.equal(counts.finance, 10)
+  assert.equal(counts.math, 12)
+  assert.equal(counts.finance, 14)
   assert.equal(counts.health, 3)
-  assert.equal(counts['date-time'], 5)
-  assert.equal(counts.everyday, 2)
+  assert.equal(counts['date-time'], 7)
+  assert.equal(counts.everyday, 4)
   assert.equal(counts.education, 0)
   assert.equal(
     activeCategories.reduce((total: number, category) => total + category.liveCount, 0),
-    30,
+    40,
   )
 })
 

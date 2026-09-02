@@ -23,10 +23,10 @@ import { LEGAL_ROUTES, publicRoutes } from '../lib/routes.ts'
 const EXPECTED_CATEGORY_PAGES = ['math', 'finance', 'health', 'date-time', 'everyday']
 
 // ---------------------------------------------------------------- Registry
-test('registry: 30 live calculators, each with a unique slug', () => {
-  assert.equal(liveCalculators.length, 30)
+test('registry: 40 live calculators, each with a unique slug', () => {
+  assert.equal(liveCalculators.length, 40)
   const slugs = liveCalculators.map((c: CalculatorDefinition) => c.slug)
-  assert.equal(new Set(slugs).size, 30)
+  assert.equal(new Set(slugs).size, 40)
 })
 
 test('registry: every live calculator sits in a category that exists', () => {
@@ -133,7 +133,7 @@ test('categories: every live calculator appears in exactly one category page', (
     }
   }
 
-  assert.equal(seen.size, 30, 'not every live calculator is reachable from a category page')
+  assert.equal(seen.size, 40, 'not every live calculator is reachable from a category page')
 })
 
 test('categories: expected members', () => {
@@ -147,16 +147,23 @@ test('categories: expected members', () => {
     'bmr-calculator',
     'calorie-calculator',
   ])
-  assert.deepEqual(inCategory('everyday').sort(), ['fuel-cost-calculator', 'unit-converter'])
+  assert.deepEqual(inCategory('everyday').sort(), [
+    'concrete-calculator',
+    'currency-converter',
+    'fuel-cost-calculator',
+    'unit-converter',
+  ])
   assert.deepEqual(inCategory('date-time').sort(), [
     'age-calculator',
+    'date-calculator',
     'date-difference-calculator',
     'days-between-dates-calculator',
     'time-duration-calculator',
+    'time-zone-converter',
     'work-hours-calculator',
   ])
-  assert.equal(inCategory('math').length, 10)
-  assert.equal(inCategory('finance').length, 10)
+  assert.equal(inCategory('math').length, 12)
+  assert.equal(inCategory('finance').length, 14)
 })
 
 test('categories: no planned calculator is listed on a category page', () => {
@@ -184,6 +191,16 @@ test('search: finds calculators by keyword and alias', () => {
     searchCalculators(query, 30).map((c: CalculatorDefinition) => c.slug)
 
   assert.equal(finds('percent of')[0], 'percentage-of-number-calculator')
+  assert.equal(finds('percentage difference')[0], 'percentage-difference-calculator')
+  assert.equal(finds('grade calculator')[0], 'grade-calculator')
+  assert.equal(finds('mortgage payment')[0], 'mortgage-calculator')
+  assert.equal(finds('savings calculator')[0], 'savings-calculator')
+  assert.equal(finds('sales commission')[0], 'commission-calculator')
+  assert.equal(finds('credit card payoff')[0], 'debt-payoff-calculator')
+  assert.equal(finds('exchange rate calculator')[0], 'currency-converter')
+  assert.equal(finds('how much concrete do i need')[0], 'concrete-calculator')
+  assert.equal(finds('add days to date')[0], 'date-calculator')
+  assert.equal(finds('timezone converter')[0], 'time-zone-converter')
   assert.equal(finds('gcd')[0], 'gcf-lcm-calculator')
   assert.equal(finds('gcf')[0], 'gcf-lcm-calculator')
   assert.equal(finds('breakeven')[0], 'break-even-calculator')
@@ -285,12 +302,12 @@ test('links: every live calculator is reachable from its category page', () => {
 })
 
 // ----------------------------------------------------------------- Sitemap
-test('sitemap: exactly 40 public URLs', () => {
+test('sitemap: exactly 50 public URLs', () => {
   const routes = publicRoutes()
   assert.equal(
     routes.length,
-    40,
-    '1 homepage + 1 directory + 5 categories + 30 calculators + 3 legal pages',
+    50,
+    '1 homepage + 1 directory + 5 categories + 40 calculators + 3 legal pages',
   )
 })
 
