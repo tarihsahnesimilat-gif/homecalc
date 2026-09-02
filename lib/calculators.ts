@@ -1,15 +1,21 @@
 import {
+  ArrowRightLeft,
   Calculator,
   CalendarClock,
+  Divide,
   DollarSign,
   GraduationCap,
   HeartPulse,
   Home,
+  Landmark,
   Percent,
+  PiggyBank,
+  Ratio,
   Receipt,
   ShoppingBasket,
   Sigma,
   Tag,
+  TrendingUp,
   type LucideIcon,
 } from 'lucide-react'
 
@@ -155,6 +161,60 @@ const calculatorDefinitions: readonly CalculatorSource[] = [
     status: 'live',
   },
   {
+    name: 'Percentage Change Calculator',
+    slug: 'percentage-change-calculator',
+    description: 'Measure the increase or decrease between two values.',
+    category: 'math',
+    icon: TrendingUp,
+    popular: true,
+    status: 'live',
+  },
+  {
+    name: 'Fraction Calculator',
+    slug: 'fraction-calculator',
+    description: 'Add, subtract, multiply, and divide fractions exactly.',
+    category: 'math',
+    icon: Divide,
+    popular: false,
+    status: 'live',
+  },
+  {
+    name: 'Ratio Calculator',
+    slug: 'ratio-calculator',
+    description: 'Scale a ratio to a known value and simplify it.',
+    category: 'math',
+    icon: Ratio,
+    popular: false,
+    status: 'live',
+  },
+  {
+    name: 'Profit Margin Calculator',
+    slug: 'profit-margin-calculator',
+    description: 'Turn revenue and cost into profit and margin.',
+    category: 'finance',
+    icon: PiggyBank,
+    popular: false,
+    status: 'live',
+  },
+  {
+    name: 'Simple Interest Calculator',
+    slug: 'simple-interest-calculator',
+    description: 'Work out interest and the total owed over time.',
+    category: 'finance',
+    icon: Landmark,
+    popular: false,
+    status: 'live',
+  },
+  {
+    name: 'Unit Converter',
+    slug: 'unit-converter',
+    description: 'Convert length, weight, temperature, and volume units.',
+    category: 'everyday',
+    icon: ArrowRightLeft,
+    popular: true,
+    status: 'live',
+  },
+  {
     name: 'BMI Calculator',
     slug: 'bmi-calculator',
     description: 'Check your body mass index and healthy range.',
@@ -276,7 +336,7 @@ export const activeCategories: readonly CategoryWithCount[] = categoriesWithCoun
  * Live calculators related to `slug`: same category first, then other popular
  * live calculators as filler. Never returns planned calculators.
  */
-export function getRelatedCalculators(slug: string, limit = 3): readonly CalculatorDefinition[] {
+export function getRelatedCalculators(slug: string, limit = 4): readonly CalculatorDefinition[] {
   const current = getCalculatorBySlug(slug)
   const candidates = liveCalculators.filter((calculator) => calculator.slug !== slug)
 

@@ -15,11 +15,11 @@ import {
 
 const featuredCalculator = liveCalculators[0]
 
-/** Live calculators first, then a few planned ones shown as "Coming soon". */
+/** Every live calculator, then popular planned ones shown as "Coming soon". */
 const showcase: readonly CalculatorDefinition[] = [
   ...liveCalculators,
   ...popularCalculators.filter((calculator) => calculator.status === 'planned'),
-].slice(0, 4)
+]
 
 const heroPopular = popularCalculators.slice(0, 4)
 
@@ -133,7 +133,7 @@ export default function Page() {
               View all <ArrowRight className="ml-1 inline size-4" />
             </Link>
           </div>
-          <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
             {activeCategories.map((category) => (
               <div
                 key={category.id}
@@ -160,7 +160,7 @@ export default function Page() {
           <div className="mx-auto max-w-6xl px-5 py-20 lg:px-8">
             <div className="flex items-end justify-between">
               <div>
-                <p className="text-sm font-semibold text-secondary">Popular tools</p>
+                <p className="text-sm font-semibold text-secondary">All calculators</p>
                 <h2 className="mt-2 text-3xl font-bold tracking-tight text-primary-foreground">
                   Start calculating
                 </h2>

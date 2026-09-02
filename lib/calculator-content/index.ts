@@ -1,8 +1,14 @@
 import type { CalculatorContent } from './types'
 import { averageContent } from './average'
 import { discountContent } from './discount'
+import { fractionContent } from './fraction'
 import { percentageContent } from './percentage'
+import { percentageChangeContent } from './percentage-change'
+import { profitMarginContent } from './profit-margin'
+import { ratioContent } from './ratio'
+import { simpleInterestContent } from './simple-interest'
 import { tipContent } from './tip'
+import { unitConverterContent } from './unit-converter'
 
 export type {
   CalculatorContent,
@@ -25,6 +31,12 @@ const contentEntries: readonly CalculatorContent[] = [
   tipContent,
   discountContent,
   averageContent,
+  percentageChangeContent,
+  fractionContent,
+  ratioContent,
+  profitMarginContent,
+  simpleInterestContent,
+  unitConverterContent,
 ]
 
 export const calculatorContent: Readonly<Record<string, CalculatorContent>> =
@@ -34,4 +46,15 @@ export function getCalculatorContent(slug: string): CalculatorContent | undefine
   return calculatorContent[slug]
 }
 
-export { percentageContent, tipContent, discountContent, averageContent }
+export {
+  percentageContent,
+  tipContent,
+  discountContent,
+  averageContent,
+  percentageChangeContent,
+  fractionContent,
+  ratioContent,
+  profitMarginContent,
+  simpleInterestContent,
+  unitConverterContent,
+}
