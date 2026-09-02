@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react'
 import { RotateCcw } from 'lucide-react'
 
 import { CalculatorResult } from '@/components/calculator/calculator-result'
+import { formatNumber } from '@/lib/format'
 
 type Mode = 'of' | 'what' | 'change' | 'increase' | 'decrease'
 
@@ -69,39 +70,34 @@ interface Calculation {
 function calculate(mode: Mode, a: number, b: number): Calculation {
   switch (mode) {
     case 'of':
-      return { label: `${format(a)}% of ${format(b)}`, value: (a / 100) * b }
+      return { label: `${formatNumber(a)}% of ${formatNumber(b)}`, value: (a / 100) * b }
     case 'what':
       return b === 0
         ? {
-            label: `${format(a)} is what % of ${format(b)}`,
+            label: `${formatNumber(a)} is what % of ${formatNumber(b)}`,
             value: null,
             error: 'The second number cannot be zero — nothing can be a percentage of zero.',
           }
-        : { label: `${format(a)} is what % of ${format(b)}`, value: (a / b) * 100 }
+        : { label: `${formatNumber(a)} is what % of ${formatNumber(b)}`, value: (a / b) * 100 }
     case 'change':
       return a === 0
         ? {
-            label: `Change from ${format(a)} to ${format(b)}`,
+            label: `Change from ${formatNumber(a)} to ${formatNumber(b)}`,
             value: null,
             error: 'The original value cannot be zero — percentage change needs a baseline.',
           }
-        : { label: `Change from ${format(a)} to ${format(b)}`, value: ((b - a) / a) * 100 }
+        : { label: `Change from ${formatNumber(a)} to ${formatNumber(b)}`, value: ((b - a) / a) * 100 }
     case 'increase':
       return {
-        label: `${format(a)} increased by ${format(b)}%`,
+        label: `${formatNumber(a)} increased by ${formatNumber(b)}%`,
         value: a * (1 + b / 100),
       }
     case 'decrease':
       return {
-        label: `${format(a)} decreased by ${format(b)}%`,
+        label: `${formatNumber(a)} decreased by ${formatNumber(b)}%`,
         value: a * (1 - b / 100),
       }
   }
-}
-
-/** Fixed locale so the server and client render identical markup. */
-function format(value: number): string {
-  return value.toLocaleString('en-US', { maximumFractionDigits: 4 })
 }
 
 export function PercentageForm() {
@@ -127,7 +123,7 @@ export function PercentageForm() {
       ? '—'
       : calculation.value === null
         ? 'Cannot divide by zero'
-        : `${format(calculation.value)}${active.resultIsPercent ? '%' : ''}`
+        : `${formatNumber(calculation.value)}${active.resultIsPercent ? '%' : ''}`
 
   return (
     <div className="mt-8 rounded-xl border border-border bg-card p-5 shadow-sm sm:p-8">
