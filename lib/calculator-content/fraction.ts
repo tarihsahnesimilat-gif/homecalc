@@ -2,7 +2,7 @@ import type { CalculatorContent } from './types.ts'
 
 export const fractionContent: CalculatorContent = {
   slug: 'fraction-calculator',
-  seoTitle: 'Fraction Calculator — Add, Subtract, Multiply and Divide Fractions',
+  seoTitle: 'Fraction Calculator — Add, Subtract, Multiply, Divide',
   seoDescription:
     'Free fraction calculator. Add, subtract, multiply, or divide two fractions and get the answer in lowest terms, as a mixed number, and as a decimal.',
   intro: {

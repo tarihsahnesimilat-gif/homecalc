@@ -4,7 +4,7 @@ export const tipContent: CalculatorContent = {
   slug: 'tip-calculator',
   seoTitle: 'Tip Calculator — Work Out a Tip and Split the Bill',
   seoDescription:
-    'Free tip calculator. Enter the bill, choose a tip percentage, and split the total between any number of people. See the tip, the total, and the amount each person owes.',
+    'Free tip calculator. Enter the bill, choose a tip percentage, and split it between any number of people. See the tip, the total, and what each person owes.',
   intro: {
     title: 'About tipping and splitting bills',
     lead: 'Work out the tip on any bill and split the total between however many people are paying.',

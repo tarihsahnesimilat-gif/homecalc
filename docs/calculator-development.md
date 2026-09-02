@@ -105,11 +105,29 @@ Create `lib/calculator-content/loan.ts` exporting a `CalculatorContent`, then
 add it to `contentEntries` in `lib/calculator-content/index.ts`. Long-form copy
 never goes in a component.
 
+Two hard budgets, both asserted in `tests/rendered-seo.test.ts`:
+
+| Field | Limit | Why |
+| --- | --- | --- |
+| `seoTitle` | 60 characters | Google truncates past roughly that, hiding the descriptive half |
+| `seoDescription` | 160 characters | Same, for the snippet |
+
+There is deliberately **no `title.template`** in `app/layout.tsx`. Appending
+` | CalculatorHub` cost 16 characters and pushed all 50 titles over the limit;
+the site name reaches search results through the `WebSite` structured data on
+the home page instead. Write the title to stand alone.
+
 ### 4. Create the page
 
 Copy any existing `app/calculators/<slug>/page.tsx`. It is ~45 lines and only
 the `SLUG` constant and the form import change. It stays a **server** component
 so metadata, canonical URL, OpenGraph and FAQ JSON-LD are generated statically.
+
+Keep `images: OG_IMAGE` in the `openGraph` block. Next.js attaches the
+site-wide card from `app/opengraph-image.tsx` only to pages that do *not*
+declare their own `openGraph`, and every page here declares one to set a
+per-page title and url — so omitting it silently ships a blank social preview.
+A test fails the build output if any page is missing `og:image`.
 
 ### 5. Create the form
 
@@ -214,8 +232,12 @@ Each page type carries exactly one JSON-LD block per entity:
 
 | Page | Structured data |
 | --- | --- |
+| Home | `WebSite` + `FAQPage` |
 | Calculator | `BreadcrumbList` + `FAQPage` + `WebApplication` |
 | Directory and category | `BreadcrumbList` + `CollectionPage` |
+
+`WebSite` on the home page is what Google reads to print the site name above a
+result, which matters because titles no longer carry a brand suffix.
 
 `WebApplication` is emitted once, inside `CalculatorShell`, so every calculator
 gets it and no page can duplicate it. **Never add ratings, reviews, prices,
@@ -318,6 +340,10 @@ live**, or every canonical URL, OpenGraph tag and sitemap entry will point at
 the placeholder. It holds no secret, needs no local value, and a trailing slash
 is stripped for you.
 
+`.env.example` documents it. A production build with the variable unset prints
+a `[site]` warning for each render worker — that noise is the reminder, and it
+disappears the moment the variable is set.
+
 ### Analytics
 
 `@vercel/analytics` is already wired into `app/layout.tsx` and rendered only
@@ -337,6 +363,13 @@ calculator, below the result, and collapses under the main column on mobile.
 Do not place anything between the inputs and the result — the answer is why
 people are on the page. No placeholder markup exists today, and none should be
 added until there is a real unit to serve.
+
+AdSense also wants `public/ads.txt` containing the publisher ID. That ID is
+account-specific, so it is **not** in the repository and must not be invented:
+create the file at launch with the real value from the AdSense dashboard.
+Everything AdSense checks for beforehand — original content on every page, a
+privacy policy that mentions advertising cookies, working navigation and no
+dead ends — is already in place.
 
 ### Legal pages
 

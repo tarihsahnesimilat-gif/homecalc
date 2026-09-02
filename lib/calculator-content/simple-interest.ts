@@ -2,9 +2,9 @@ import type { CalculatorContent } from './types.ts'
 
 export const simpleInterestContent: CalculatorContent = {
   slug: 'simple-interest-calculator',
-  seoTitle: 'Simple Interest Calculator — Interest and Total Amount Over Time',
+  seoTitle: 'Simple Interest Calculator — Interest and Total Amount',
   seoDescription:
-    'Free simple interest calculator. Enter a principal, an annual rate, and a period in years or months to see the interest earned and the total amount owed or held.',
+    'Free simple interest calculator. Enter a principal, an annual rate, and a period in years or months to see the interest earned and the total owed or held.',
   intro: {
     title: 'About simple interest',
     lead: 'Enter a principal, an annual rate, and a period to see the interest and the total amount.',

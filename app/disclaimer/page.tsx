@@ -1,16 +1,16 @@
 import type { Metadata } from 'next'
 
 import { LegalPage } from '@/components/legal-page'
-import { siteConfig } from '@/lib/site'
+import { OG_IMAGE, siteConfig } from '@/lib/site'
 
 const TITLE = 'Disclaimer'
 const DESCRIPTION = `What ${siteConfig.name} results are and are not: general information from standard formulas, never financial, medical or professional advice.`
 
 export const metadata: Metadata = {
-  title: TITLE,
+  title: `${TITLE} | ${siteConfig.name}`,
   description: DESCRIPTION,
   alternates: { canonical: '/disclaimer' },
-  openGraph: { title: TITLE, description: DESCRIPTION, url: '/disclaimer', type: 'website' },
+  openGraph: { title: TITLE, description: DESCRIPTION, url: '/disclaimer', type: 'website', images: OG_IMAGE },
 }
 
 export default function DisclaimerPage() {

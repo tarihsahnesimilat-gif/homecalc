@@ -2,7 +2,7 @@ import type { CalculatorContent } from './types.ts'
 
 export const dateDifferenceContent: CalculatorContent = {
   slug: 'date-difference-calculator',
-  seoTitle: 'Date Difference Calculator — Years, Months and Days Between Dates',
+  seoTitle: 'Date Difference Calculator — Years, Months and Days',
   seoDescription:
     'Free date difference calculator. Enter two dates to see the gap in years, months and days, plus the total days, weeks and an inclusive day count.',
   intro: {

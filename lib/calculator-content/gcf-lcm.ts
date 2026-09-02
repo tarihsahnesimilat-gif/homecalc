@@ -2,7 +2,7 @@ import type { CalculatorContent } from './types.ts'
 
 export const gcfLcmContent: CalculatorContent = {
   slug: 'gcf-lcm-calculator',
-  seoTitle: 'GCF and LCM Calculator — Greatest Common Factor and Lowest Multiple',
+  seoTitle: 'GCF and LCM Calculator — Common Factor and Multiple',
   seoDescription:
     'Free GCF and LCM calculator. Enter two whole numbers to find their greatest common factor (also called the GCD) and their least common multiple.',
   intro: {

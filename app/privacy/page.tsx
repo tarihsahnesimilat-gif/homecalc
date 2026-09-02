@@ -1,16 +1,16 @@
 import type { Metadata } from 'next'
 
 import { LegalPage } from '@/components/legal-page'
-import { siteConfig } from '@/lib/site'
+import { OG_IMAGE, siteConfig } from '@/lib/site'
 
 const TITLE = 'Privacy Policy'
 const DESCRIPTION = `How ${siteConfig.name} handles your data: calculations run in your browser, and the values you enter are never sent to us or stored.`
 
 export const metadata: Metadata = {
-  title: TITLE,
+  title: `${TITLE} | ${siteConfig.name}`,
   description: DESCRIPTION,
   alternates: { canonical: '/privacy' },
-  openGraph: { title: TITLE, description: DESCRIPTION, url: '/privacy', type: 'website' },
+  openGraph: { title: TITLE, description: DESCRIPTION, url: '/privacy', type: 'website', images: OG_IMAGE },
 }
 
 export default function PrivacyPage() {

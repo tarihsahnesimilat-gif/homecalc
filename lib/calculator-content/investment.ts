@@ -2,7 +2,7 @@ import type { CalculatorContent } from './types.ts'
 
 export const investmentContent: CalculatorContent = {
   slug: 'investment-calculator',
-  seoTitle: 'Investment Calculator — Project Growth With Monthly Contributions',
+  seoTitle: 'Investment Calculator — Growth With Monthly Deposits',
   seoDescription:
     'Free investment calculator. Combine a starting amount, monthly contributions, a rate of return and a time period to project the final value and the growth.',
   intro: {

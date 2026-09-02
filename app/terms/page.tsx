@@ -1,16 +1,16 @@
 import type { Metadata } from 'next'
 
 import { LegalPage } from '@/components/legal-page'
-import { siteConfig } from '@/lib/site'
+import { OG_IMAGE, siteConfig } from '@/lib/site'
 
 const TITLE = 'Terms of Use'
 const DESCRIPTION = `The terms that apply when you use ${siteConfig.name}: the calculators are free to use, provided as they are, and offered for general information.`
 
 export const metadata: Metadata = {
-  title: TITLE,
+  title: `${TITLE} | ${siteConfig.name}`,
   description: DESCRIPTION,
   alternates: { canonical: '/terms' },
-  openGraph: { title: TITLE, description: DESCRIPTION, url: '/terms', type: 'website' },
+  openGraph: { title: TITLE, description: DESCRIPTION, url: '/terms', type: 'website', images: OG_IMAGE },
 }
 
 export default function TermsPage() {

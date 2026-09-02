@@ -2,9 +2,9 @@ import type { CalculatorContent } from './types.ts'
 
 export const percentageChangeContent: CalculatorContent = {
   slug: 'percentage-change-calculator',
-  seoTitle: 'Percentage Change Calculator — Increase and Decrease Between Two Values',
+  seoTitle: 'Percentage Change Calculator — Increase or Decrease',
   seoDescription:
-    'Free percentage change calculator. Enter an original and a new value to see the percentage increase or decrease, the direction of the change, and the absolute difference.',
+    'Free percentage change calculator. Enter an original and a new value to see the percentage increase or decrease, the direction, and the absolute difference.',
   intro: {
     title: 'About percentage change',
     lead: 'Enter where you started and where you ended up to see the percentage increase or decrease between them.',

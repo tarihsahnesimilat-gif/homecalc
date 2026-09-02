@@ -2,7 +2,7 @@ import type { CalculatorContent } from './types.ts'
 
 export const calorieDeficitContent: CalculatorContent = {
   slug: 'calorie-deficit-calculator',
-  seoTitle: 'Calorie Deficit Calculator — Daily Target and Weekly Projection',
+  seoTitle: 'Calorie Deficit Calculator — Daily Target and Weekly Loss',
   seoDescription:
     'Free calorie deficit calculator. Turn a daily deficit into a target intake and an estimated weekly change, using the standard rule-of-thumb constants.',
   intro: {

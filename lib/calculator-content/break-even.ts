@@ -2,7 +2,7 @@ import type { CalculatorContent } from './types.ts'
 
 export const breakEvenContent: CalculatorContent = {
   slug: 'break-even-calculator',
-  seoTitle: 'Break-Even Calculator — Units and Revenue to Cover Your Costs',
+  seoTitle: 'Break-Even Calculator — Units and Revenue to Cover Costs',
   seoDescription:
     'Free break-even calculator. Enter fixed costs, variable cost per unit and selling price to find how many units you must sell before you start making a profit.',
   intro: {

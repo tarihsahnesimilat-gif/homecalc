@@ -14,7 +14,7 @@ import {
   getCategory,
   getLiveCalculatorsByCategory,
 } from '@/lib/calculators'
-import { absoluteUrl } from '@/lib/site'
+import { OG_IMAGE, absoluteUrl } from '@/lib/site'
 
 interface CategoryPageProps {
   params: Promise<{ category: string }>
@@ -54,6 +54,7 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
       description: category.seoDescription,
       url: path,
       type: 'website',
+      images: OG_IMAGE,
     },
   }
 }

@@ -4,7 +4,7 @@ export const concreteContent: CalculatorContent = {
   slug: 'concrete-calculator',
   seoTitle: 'Concrete Calculator — Volume for a Slab in Yards or Metres',
   seoDescription:
-    'Free concrete calculator. Enter length, width and depth to estimate the volume needed for a slab, in cubic yards, cubic feet and cubic metres, with a waste allowance.',
+    'Free concrete calculator. Enter length, width and depth to estimate the volume needed for a slab, in cubic yards, feet and metres, with a waste allowance.',
   intro: {
     title: 'About estimating concrete',
     lead: 'Estimate the concrete a rectangular slab needs, with an allowance for waste.',

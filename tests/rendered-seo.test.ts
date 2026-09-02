@@ -168,3 +168,61 @@ test('rendered: the homepage links to the directory and category pages', { skip:
     )
   }
 })
+
+/** Entities inflate a raw `<title>` string; Google measures the decoded text. */
+function decodeEntities(text: string): string {
+  return text
+    .replace(/&amp;/g, '&')
+    .replace(/&#x27;|&apos;/g, "'")
+    .replace(/&quot;/g, '"')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+}
+
+/**
+ * Google renders roughly 60 characters of a title and 160 of a description
+ * before truncating. Overrunning does not hurt ranking, but it hides the part
+ * of the copy that earns the click — and the ` | CalculatorHub` suffix used to
+ * push every title past the limit. This keeps that from creeping back as the
+ * catalog grows.
+ */
+const MAX_TITLE = 60
+const MAX_DESCRIPTION = 160
+
+test('rendered: titles and descriptions fit what Google displays', { skip: !hasBuild }, () => {
+  for (const page of allPages()) {
+    const html = read(page)
+    const title = decodeEntities(/<title>([^<]*)<\/title>/.exec(html)?.[1] ?? '')
+    const description = decodeEntities(
+      /<meta name="description" content="([^"]*)"/.exec(html)?.[1] ?? '',
+    )
+
+    assert.ok(title.length > 0, `${page}: missing title`)
+    assert.ok(
+      title.length <= MAX_TITLE,
+      `${page}: title is ${title.length} chars, over ${MAX_TITLE} — ${title}`,
+    )
+    assert.ok(description.length > 0, `${page}: missing description`)
+    assert.ok(
+      description.length <= MAX_DESCRIPTION,
+      `${page}: description is ${description.length} chars, over ${MAX_DESCRIPTION}`,
+    )
+  }
+})
+
+test('rendered: every public page carries a social preview image', { skip: !hasBuild }, () => {
+  for (const page of allPages()) {
+    const html = read(page)
+    assert.equal(
+      count(html, /property="og:image"/g),
+      1,
+      `${page}: expected exactly one og:image — pages that declare their own openGraph block must spread OG_IMAGE in`,
+    )
+  }
+})
+
+test('rendered: the home page declares the site name for search results', { skip: !hasBuild }, () => {
+  const html = read('index.html')
+  assert.match(html, /"@type":"WebSite"/, 'home page should carry WebSite structured data')
+  assert.match(html, /"@type":"FAQPage"/, 'home page FAQs should be marked up')
+})

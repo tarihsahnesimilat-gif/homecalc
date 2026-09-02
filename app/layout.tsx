@@ -7,10 +7,13 @@ import './globals.css'
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
-  title: {
-    default: 'CalculatorHub — Simple calculators for everyday life',
-    template: '%s | CalculatorHub',
-  },
+  /**
+   * No `template` on purpose. Every page title already names the tool and its
+   * job, and appending ` | CalculatorHub` pushed all of them past the ~60
+   * characters Google renders, truncating the descriptive half. Google derives
+   * the site name for the SERP from the WebSite schema on the home page.
+   */
+  title: 'CalculatorHub — Simple calculators for everyday life',
   description: siteConfig.description,
   generator: 'CalculatorHub',
   alternates: { canonical: '/' },

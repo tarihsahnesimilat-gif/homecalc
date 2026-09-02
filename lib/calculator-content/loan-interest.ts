@@ -4,7 +4,7 @@ export const loanInterestContent: CalculatorContent = {
   slug: 'loan-interest-calculator',
   seoTitle: 'Loan Interest Calculator — What a Loan Really Costs',
   seoDescription:
-    'Free loan interest calculator. See the total interest on a loan, how much of the first payment is interest, and what the borrowing costs as a share of the amount.',
+    'Free loan interest calculator. See the total interest on a loan, how much of the first payment is interest, and what it costs as a share of the amount.',
   intro: {
     title: 'About the interest on a loan',
     lead: 'See what a loan costs in interest, and why the balance barely moves at first.',

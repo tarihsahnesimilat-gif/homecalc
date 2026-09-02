@@ -2,7 +2,7 @@ import type { CalculatorContent } from './types.ts'
 
 export const ratioToPercentageContent: CalculatorContent = {
   slug: 'ratio-to-percentage-calculator',
-  seoTitle: 'Ratio to Percentage Calculator — Convert a Ratio to Percentages',
+  seoTitle: 'Ratio to Percentage Calculator — Convert Any Ratio',
   seoDescription:
     'Free ratio to percentage calculator. Turn a ratio into each part’s share of the whole, and see one part as a percentage of the other.',
   intro: {

@@ -2,7 +2,7 @@ import type { CalculatorContent } from './types.ts'
 
 export const timeDurationContent: CalculatorContent = {
   slug: 'time-duration-calculator',
-  seoTitle: 'Time Duration Calculator — Hours and Minutes Between Two Times',
+  seoTitle: 'Time Duration Calculator — Hours Between Two Times',
   seoDescription:
     'Free time duration calculator. Enter a start and end time to see the elapsed hours and minutes, with times crossing midnight handled correctly.',
   intro: {

@@ -2,7 +2,7 @@ import type { CalculatorContent } from './types.ts'
 
 export const areaContent: CalculatorContent = {
   slug: 'area-calculator',
-  seoTitle: 'Area Calculator — Square Footage for Rooms, Circles and Triangles',
+  seoTitle: 'Area Calculator — Square Footage for Rooms and Shapes',
   seoDescription:
     'Free area calculator. Find the area of a rectangle, circle or triangle in square feet, square metres and square yards, for flooring, paint and materials.',
   intro: {

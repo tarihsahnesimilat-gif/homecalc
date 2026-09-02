@@ -11,7 +11,7 @@ import {
   groupLiveCalculatorsByCategory,
   liveCalculators,
 } from '@/lib/calculators'
-import { absoluteUrl } from '@/lib/site'
+import { OG_IMAGE, absoluteUrl } from '@/lib/site'
 
 const TITLE = 'All Calculators — The Full CalculatorHub Directory'
 const DESCRIPTION =
@@ -26,6 +26,7 @@ export const metadata: Metadata = {
     description: DESCRIPTION,
     url: CALCULATORS_DIRECTORY_PATH,
     type: 'website',
+    images: OG_IMAGE,
   },
 }
 

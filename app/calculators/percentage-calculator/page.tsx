@@ -8,6 +8,7 @@ import { RelatedCalculators } from '@/components/calculator/related-calculators'
 import { SiteHeader } from '@/components/site-header'
 import { getCalculatorContent } from '@/lib/calculator-content'
 import { calculatorHref, getCalculatorBySlug, getRelatedCalculators } from '@/lib/calculators'
+import { OG_IMAGE } from '@/lib/site'
 
 import { PercentageForm } from './percentage-form'
 
@@ -27,6 +28,7 @@ export const metadata: Metadata = content
         description: content.seoDescription,
         url: canonicalPath,
         type: 'article',
+        images: OG_IMAGE,
       },
     }
   : {}

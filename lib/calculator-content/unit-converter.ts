@@ -4,7 +4,7 @@ export const unitConverterContent: CalculatorContent = {
   slug: 'unit-converter',
   seoTitle: 'Unit Converter — Length, Weight, Temperature and Volume',
   seoDescription:
-    'Free unit converter for length, weight, temperature, and volume. Convert meters, feet, kilograms, pounds, Celsius, Fahrenheit, liters, gallons, and more instantly.',
+    'Free unit converter for length, weight, temperature, and volume. Convert meters, feet, kilograms, pounds, Celsius, Fahrenheit, liters, gallons and more.',
   intro: {
     title: 'About unit conversion',
     lead: 'Convert between metric and imperial units for length, weight, temperature, and volume.',

@@ -13,6 +13,7 @@ import {
   popularCalculators,
   type CalculatorDefinition,
 } from '@/lib/calculators'
+import { absoluteUrl, siteConfig } from '@/lib/site'
 
 const featuredCalculator = liveCalculators[0]
 
@@ -40,6 +41,33 @@ const homepageFaqs: readonly { question: string; answer: string }[] = [
       'Absolutely. We are always looking for useful tools to add to the collection.',
   },
 ]
+
+/**
+ * `WebSite` is how Google resolves the name it prints above a search result.
+ * That matters more since page titles stopped carrying a ` | CalculatorHub`
+ * suffix. The `FAQPage` entry mirrors the questions rendered further down --
+ * the same visible-content rule the calculator pages follow.
+ */
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebSite',
+      '@id': `${siteConfig.url}/#website`,
+      name: siteConfig.name,
+      url: absoluteUrl('/'),
+      description: siteConfig.description,
+    },
+    {
+      '@type': 'FAQPage',
+      mainEntity: homepageFaqs.map((faq) => ({
+        '@type': 'Question',
+        name: faq.question,
+        acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+      })),
+    },
+  ],
+}
 
 export default function Page() {
   return (
@@ -301,6 +329,10 @@ export default function Page() {
         </section>
       </main>
 
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
     </>
   )
 }

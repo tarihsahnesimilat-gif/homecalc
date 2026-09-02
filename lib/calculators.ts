@@ -170,7 +170,7 @@ export const categories: readonly CalculatorCategory[] = [
     icon: Home,
     seoTitle: 'Home & Living Calculators',
     seoDescription:
-      'Calculators for planning work around the home. More tools are on the way.',
+      'Free home and living calculators for planning work around the house. Work out the area and square footage of a room before you order materials.',
   },
   {
     id: 'education',

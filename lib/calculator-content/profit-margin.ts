@@ -2,9 +2,9 @@ import type { CalculatorContent } from './types.ts'
 
 export const profitMarginContent: CalculatorContent = {
   slug: 'profit-margin-calculator',
-  seoTitle: 'Profit Margin Calculator — Profit and Margin from Revenue and Cost',
+  seoTitle: 'Profit Margin Calculator — Margin from Revenue and Cost',
   seoDescription:
-    'Free profit margin calculator. Enter revenue and cost to see the profit and the profit margin as a percentage, including negative margins when cost exceeds revenue.',
+    'Free profit margin calculator. Enter revenue and cost to see the profit and the margin as a percentage, including negative margins when cost exceeds revenue.',
   intro: {
     title: 'About profit margin',
     lead: 'Enter what you take in and what it cost you to see the profit and the margin behind it.',
