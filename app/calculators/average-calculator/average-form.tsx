@@ -1,49 +1,19 @@
 'use client'
 
 import { useMemo, useRef, useState } from 'react'
-import { Plus, RotateCcw, X } from 'lucide-react'
+import { Plus, X } from 'lucide-react'
 
-import { CalculatorResult } from '@/components/calculator/calculator-result'
+import { CalculatorReset, CalculatorResult, ResultBreakdown } from '@/components/calculator'
+import { evaluateAverage } from '@/lib/calculations/average'
+import { outcomeValue } from '@/lib/calculator-validation'
 import { formatNumber } from '@/lib/format'
 
 const DEFAULT_VALUES = ['10', '20', '30', '40']
 
 interface ValueRow {
-  /** Stable key so removing a row does not shuffle React's input state. */
+  /** Stable key so removing a row does not shuffle React state between inputs. */
   id: number
   value: string
-}
-
-interface AverageSummary {
-  sum: number
-  count: number
-  average: number
-}
-
-type AverageOutcome =
-  | { state: 'empty' }
-  | { state: 'invalid'; message: string }
-  | { state: 'ok'; summary: AverageSummary }
-
-/**
- * Blank rows are skipped rather than counted as zero; a typed `0` is a real
- * value and does count.
- */
-export function evaluateAverage(rawValues: readonly string[]): AverageOutcome {
-  const filled = rawValues.filter((value) => value.trim() !== '')
-  if (filled.length === 0) return { state: 'empty' }
-
-  const numbers = filled.map(Number)
-  if (numbers.some((value) => !Number.isFinite(value))) {
-    return { state: 'invalid', message: 'Please enter numbers only.' }
-  }
-
-  const sum = numbers.reduce((total, value) => total + value, 0)
-
-  return {
-    state: 'ok',
-    summary: { sum, count: numbers.length, average: sum / numbers.length },
-  }
 }
 
 export function AverageForm() {
@@ -53,7 +23,7 @@ export function AverageForm() {
   )
 
   const outcome = useMemo(() => evaluateAverage(rows.map((row) => row.value)), [rows])
-  const summary = outcome.state === 'ok' ? outcome.summary : null
+  const summary = outcomeValue(outcome)
 
   function updateRow(id: number, value: string) {
     setRows((current) => current.map((row) => (row.id === id ? { ...row, value } : row)))
@@ -67,22 +37,13 @@ export function AverageForm() {
     setRows((current) => (current.length > 1 ? current.filter((row) => row.id !== id) : current))
   }
 
-  const resultValue =
-    outcome.state === 'invalid'
-      ? outcome.message
-      : summary === null
-        ? '—'
-        : formatNumber(summary.average)
-
-  const resultHint =
-    outcome.state === 'empty'
-      ? 'Enter at least one number to see the average.'
-      : summary === null
-        ? undefined
-        : `From ${formatNumber(summary.count)} value${summary.count === 1 ? '' : 's'} totalling ${formatNumber(summary.sum)}.`
-
   return (
     <div className="mt-8 rounded-xl border border-border bg-card p-5 shadow-sm sm:p-8">
+      {/*
+        Repeating rows keep a bare input on purpose: each row is one value in a
+        list rather than a distinct labelled field, so NumberInput's label and
+        hint layout does not apply here.
+      */}
       <fieldset className="grid gap-3">
         <legend className="text-sm font-semibold text-primary">Your numbers</legend>
         {rows.map((row, index) => (
@@ -121,38 +82,40 @@ export function AverageForm() {
       <CalculatorResult
         className="mt-7"
         label={summary ? 'Average (mean)' : 'Your result'}
-        value={resultValue}
-        hint={resultHint}
+        value={
+          outcome.state === 'invalid'
+            ? outcome.message
+            : summary === null
+              ? '—'
+              : formatNumber(summary.average)
+        }
+        hint={
+          outcome.state === 'empty'
+            ? 'Enter at least one number to see the average.'
+            : summary === null
+              ? undefined
+              : `From ${formatNumber(summary.count)} value${summary.count === 1 ? '' : 's'} totalling ${formatNumber(summary.sum)}.`
+        }
         isError={outcome.state === 'invalid'}
       />
 
-      <dl className="mt-5 grid gap-3 sm:grid-cols-3">
-        {[
+      <ResultBreakdown
+        items={[
           { term: 'Sum', value: summary && formatNumber(summary.sum) },
           { term: 'Count', value: summary && formatNumber(summary.count) },
           { term: 'Average', value: summary && formatNumber(summary.average) },
-        ].map((item) => (
-          <div key={item.term} className="rounded-lg border border-border bg-background p-4">
-            <dt className="text-xs font-medium text-muted-foreground">{item.term}</dt>
-            <dd className="mt-1 text-xl font-bold text-primary">{item.value ?? '—'}</dd>
-          </div>
-        ))}
-      </dl>
+        ]}
+      />
 
-      <button
-        type="button"
-        onClick={() => {
+      <CalculatorReset
+        onReset={() => {
           nextId.current = 2
           setRows([
             { id: 0, value: '' },
             { id: 1, value: '' },
           ])
         }}
-        className="mt-5 flex items-center gap-2 text-sm font-semibold text-muted-foreground hover:text-primary"
-      >
-        <RotateCcw className="size-4" />
-        Reset values
-      </button>
+      />
     </div>
   )
 }
