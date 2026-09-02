@@ -23,10 +23,10 @@ import { publicRoutes } from '../lib/routes.ts'
 const EXPECTED_CATEGORY_PAGES = ['math', 'finance', 'health', 'date-time', 'everyday']
 
 // ---------------------------------------------------------------- Registry
-test('registry: 20 live calculators, each with a unique slug', () => {
-  assert.equal(liveCalculators.length, 20)
+test('registry: 30 live calculators, each with a unique slug', () => {
+  assert.equal(liveCalculators.length, 30)
   const slugs = liveCalculators.map((c: CalculatorDefinition) => c.slug)
-  assert.equal(new Set(slugs).size, 20)
+  assert.equal(new Set(slugs).size, 30)
 })
 
 test('registry: every live calculator sits in a category that exists', () => {
@@ -57,6 +57,22 @@ test('registry: no calculator repeats a keyword', () => {
       keywords.length,
       `${calculator.slug} lists the same keyword twice`,
     )
+  }
+})
+
+test('registry: each keyword belongs to exactly one calculator', () => {
+  // Aliases are how people search, so a term claimed by two calculators would
+  // make which one ranks first depend on alphabetical order rather than intent.
+  const owners = new Map<string, string[]>()
+
+  for (const calculator of calculators) {
+    for (const keyword of calculator.keywords ?? []) {
+      owners.set(keyword, [...(owners.get(keyword) ?? []), calculator.slug])
+    }
+  }
+
+  for (const [keyword, slugs] of owners) {
+    assert.equal(slugs.length, 1, `"${keyword}" is claimed by ${slugs.join(' and ')}`)
   }
 })
 
@@ -117,7 +133,7 @@ test('categories: every live calculator appears in exactly one category page', (
     }
   }
 
-  assert.equal(seen.size, 20, 'not every live calculator is reachable from a category page')
+  assert.equal(seen.size, 30, 'not every live calculator is reachable from a category page')
 })
 
 test('categories: expected members', () => {
@@ -131,14 +147,16 @@ test('categories: expected members', () => {
     'bmr-calculator',
     'calorie-calculator',
   ])
+  assert.deepEqual(inCategory('everyday').sort(), ['fuel-cost-calculator', 'unit-converter'])
   assert.deepEqual(inCategory('date-time').sort(), [
     'age-calculator',
     'date-difference-calculator',
     'days-between-dates-calculator',
+    'time-duration-calculator',
+    'work-hours-calculator',
   ])
-  assert.deepEqual(inCategory('everyday').sort(), ['unit-converter'])
-  assert.equal(inCategory('math').length, 6)
-  assert.equal(inCategory('finance').length, 7)
+  assert.equal(inCategory('math').length, 10)
+  assert.equal(inCategory('finance').length, 10)
 })
 
 test('categories: no planned calculator is listed on a category page', () => {
@@ -165,7 +183,17 @@ test('search: finds calculators by keyword and alias', () => {
   const finds = (query: string) =>
     searchCalculators(query, 30).map((c: CalculatorDefinition) => c.slug)
 
-  assert.equal(finds('percent')[0], 'percentage-calculator')
+  assert.equal(finds('percent of')[0], 'percentage-of-number-calculator')
+  assert.equal(finds('gcd')[0], 'gcf-lcm-calculator')
+  assert.equal(finds('gcf')[0], 'gcf-lcm-calculator')
+  assert.equal(finds('breakeven')[0], 'break-even-calculator')
+  assert.equal(finds('shift hours')[0], 'work-hours-calculator')
+  assert.equal(finds('gas cost')[0], 'fuel-cost-calculator')
+  assert.equal(finds('elapsed time')[0], 'time-duration-calculator')
+  assert.equal(finds('investment growth')[0], 'investment-calculator')
+  assert.equal(finds('sqrt')[0], 'square-root-calculator')
+  assert.equal(finds('x to the power')[0], 'exponent-calculator')
+  assert.equal(finds('sales tax')[0], 'sales-tax-calculator')
   assert.equal(finds('body mass index')[0], 'bmi-calculator')
   assert.equal(finds('monthly payment')[0], 'loan-payment-calculator')
   assert.equal(finds('tdee')[0], 'calorie-calculator')
@@ -257,9 +285,9 @@ test('links: every live calculator is reachable from its category page', () => {
 })
 
 // ----------------------------------------------------------------- Sitemap
-test('sitemap: exactly 27 public URLs', () => {
+test('sitemap: exactly 37 public URLs', () => {
   const routes = publicRoutes()
-  assert.equal(routes.length, 27, '1 homepage + 1 directory + 5 categories + 20 calculators')
+  assert.equal(routes.length, 37, '1 homepage + 1 directory + 5 categories + 30 calculators')
 })
 
 test('sitemap: contains the homepage, directory, categories and calculators', () => {

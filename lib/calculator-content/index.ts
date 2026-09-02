@@ -19,6 +19,16 @@ import { scientificContent } from './scientific.ts'
 import { simpleInterestContent } from './simple-interest.ts'
 import { tipContent } from './tip.ts'
 import { unitConverterContent } from './unit-converter.ts'
+import { breakEvenContent } from './break-even.ts'
+import { exponentContent } from './exponent.ts'
+import { fuelCostContent } from './fuel-cost.ts'
+import { gcfLcmContent } from './gcf-lcm.ts'
+import { investmentContent } from './investment.ts'
+import { percentageOfNumberContent } from './percentage-of-number.ts'
+import { salesTaxContent } from './sales-tax.ts'
+import { squareRootContent } from './square-root.ts'
+import { timeDurationContent } from './time-duration.ts'
+import { workHoursContent } from './work-hours.ts'
 
 export type {
   CalculatorContent,
@@ -57,6 +67,16 @@ const contentEntries: readonly CalculatorContent[] = [
   dateDifferenceContent,
   daysBetweenContent,
   scientificContent,
+  percentageOfNumberContent,
+  gcfLcmContent,
+  exponentContent,
+  squareRootContent,
+  salesTaxContent,
+  investmentContent,
+  breakEvenContent,
+  fuelCostContent,
+  timeDurationContent,
+  workHoursContent,
 ]
 
 export const calculatorContent: Readonly<Record<string, CalculatorContent>> =
@@ -87,4 +107,14 @@ export {
   dateDifferenceContent,
   daysBetweenContent,
   scientificContent,
+  percentageOfNumberContent,
+  gcfLcmContent,
+  exponentContent,
+  squareRootContent,
+  salesTaxContent,
+  investmentContent,
+  breakEvenContent,
+  fuelCostContent,
+  timeDurationContent,
+  workHoursContent,
 }

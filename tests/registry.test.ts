@@ -38,10 +38,20 @@ const LIVE_SLUGS = [
   'date-difference-calculator',
   'days-between-dates-calculator',
   'scientific-calculator',
+  'percentage-of-number-calculator',
+  'gcf-lcm-calculator',
+  'exponent-calculator',
+  'square-root-calculator',
+  'sales-tax-calculator',
+  'investment-calculator',
+  'break-even-calculator',
+  'fuel-cost-calculator',
+  'time-duration-calculator',
+  'work-hours-calculator',
 ]
 
-test('registry: twenty live calculators', () => {
-  assert.equal(liveCalculators.length, 20)
+test('registry: thirty live calculators', () => {
+  assert.equal(liveCalculators.length, 30)
   assert.deepEqual([...liveCalculators.map((c: CalculatorDefinition) => c.slug)].sort(), [...LIVE_SLUGS].sort())
 })
 
@@ -74,15 +84,15 @@ test('registry: category counts are derived, not hardcoded', () => {
   const counts: Record<string, number> = Object.fromEntries(
     categoriesWithCounts.map((category) => [category.id, category.liveCount]),
   )
-  assert.equal(counts.math, 6, 'percentage, average, change, fraction, ratio, scientific')
-  assert.equal(counts.finance, 7, 'tip, discount, margin, simple, compound, loan, roi')
-  assert.equal(counts.health, 3, 'bmi, bmr, calorie')
-  assert.equal(counts['date-time'], 3, 'age, date difference, days between')
-  assert.equal(counts.everyday, 1, 'unit converter')
+  assert.equal(counts.math, 10)
+  assert.equal(counts.finance, 10)
+  assert.equal(counts.health, 3)
+  assert.equal(counts['date-time'], 5)
+  assert.equal(counts.everyday, 2)
   assert.equal(counts.education, 0)
   assert.equal(
     activeCategories.reduce((total: number, category) => total + category.liveCount, 0),
-    20,
+    30,
   )
 })
 

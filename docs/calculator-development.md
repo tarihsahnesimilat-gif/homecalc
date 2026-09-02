@@ -51,6 +51,12 @@ keyword-stuffed page copy:
 keywords: ['loan', 'monthly payment', 'mortgage payment', 'amortization'],
 ```
 
+**Each keyword must belong to exactly one calculator**, and a test enforces it.
+When a new calculator deserves an alias an older one holds — a dedicated
+Square Root Calculator claiming `square root` from the Scientific Calculator —
+move it rather than duplicating it. A shared alias makes the top search result
+depend on alphabetical order instead of intent.
+
 Add `related: ['other-slug']` when a specific pairing matters more than
 category order — Loan Payment to Compound Interest, say. Curated slugs are
 shown first and category-mates fill the remaining slots.
@@ -221,6 +227,47 @@ fabrication. A test fails the build output if any of those keys appear.
 `lib/routes.ts` derives every public route from the registry, and `app/sitemap.ts`
 just maps it to URLs. Nothing is hand-written, so a planned calculator cannot
 leak in. The count is asserted in `tests/discovery.test.ts`.
+
+## Domain conventions
+
+Conventions worth following when a new calculator touches one of these areas.
+
+### Money projections
+
+Investment and loan projections state their assumptions on the page and in the
+module doc comment — when contributions land, how often growth compounds, and
+what is excluded (fees, tax, inflation). Present the result as a projection of
+those assumptions, never as a prediction or as advice. Where a rate is an input
+the user cannot know, say so and suggest trying a range.
+
+### Business calculations
+
+Break-even style calculations turn on the contribution margin — selling price
+minus variable cost. Validate that it is positive and explain *why* when it is
+not: a zero margin never repays fixed costs, and a negative one loses money on
+every sale. Round unit counts up, since part of a unit cannot be sold.
+
+### Times of day
+
+Wall-clock times use `lib/calculations/time-utils.ts`, which holds them as
+minutes past midnight rather than as `Date` objects. `parseTimeInput` reads the
+`HH:MM` a native time input produces, and `minutesBetween` handles the rollover.
+
+**Overnight spans are the default behaviour, not a special case.** An end time
+earlier than the start adds a day, so 22:00 to 06:00 is eight hours. Two equal
+times give zero, not twenty-four hours — someone entering one time twice means
+no elapsed time. Anything longer than a day needs dates, so use the calendar
+helpers in `date-utils.ts` instead.
+
+### Fuel and unit-bearing inputs
+
+The fuel calculator stays unit-neutral: the user supplies distance, efficiency
+and price in whatever units they already think in, and the only rule is that
+efficiency and price share a volume unit. What it does need to know is which
+*convention* the efficiency uses — distance per unit of fuel (mpg, km/L, higher
+is better) or fuel per 100 distance (L/100 km, lower is better) — because the
+two divide in opposite directions. Offer that as a toggle rather than trying to
+infer it.
 
 ## Working with dates
 
