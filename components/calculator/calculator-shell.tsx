@@ -3,7 +3,14 @@ import { ArrowLeft } from 'lucide-react'
 import type { ReactNode } from 'react'
 
 import type { CalculatorContent } from '@/lib/calculator-content/types'
-import { getCategoryName, type CalculatorDefinition } from '@/lib/calculators'
+import {
+  CALCULATORS_DIRECTORY_PATH,
+  categoryHref,
+  getCategoryName,
+  type CalculatorDefinition,
+} from '@/lib/calculators'
+import { absoluteUrl } from '@/lib/site'
+import { Breadcrumbs } from './breadcrumbs'
 
 interface CalculatorShellProps {
   calculator: CalculatorDefinition
@@ -19,25 +26,41 @@ interface CalculatorShellProps {
  * and the two-column layout with the sidebar.
  */
 export function CalculatorShell({ calculator, content, children, aside }: CalculatorShellProps) {
+  /**
+   * Each calculator genuinely is a free browser tool, so WebApplication
+   * describes it accurately. Every field below is derived from the registry or
+   * the content file — no ratings, reviews, prices, authors or organisations
+   * are asserted, because none of those exist to assert.
+   *
+   * Emitted here rather than per page so there can only ever be one such block
+   * per calculator.
+   */
+  const applicationSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebApplication',
+    name: calculator.name,
+    description: content.seoDescription,
+    url: absoluteUrl(calculator.href),
+    applicationCategory: 'UtilitiesApplication',
+    operatingSystem: 'Any',
+    browserRequirements: 'Requires JavaScript',
+    isAccessibleForFree: true,
+  }
+
   return (
     <main className="mx-auto max-w-6xl px-5 py-10 lg:px-8">
-      <nav aria-label="Breadcrumb" className="mb-8">
-        <ol className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
-          <li>
-            <Link href="/" className="hover:text-primary">
-              Home
-            </Link>
-          </li>
-          <li aria-hidden="true">/</li>
-          <li>
-            <Link href="/#categories" className="hover:text-primary">
-              {getCategoryName(calculator.category)}
-            </Link>
-          </li>
-          <li aria-hidden="true">/</li>
-          <li className="text-foreground">{calculator.name}</li>
-        </ol>
-      </nav>
+      <Breadcrumbs
+        className="mb-8"
+        items={[
+          { label: 'Home', href: '/' },
+          { label: 'Calculators', href: CALCULATORS_DIRECTORY_PATH },
+          {
+            label: getCategoryName(calculator.category),
+            href: categoryHref(calculator.category),
+          },
+          { label: calculator.name },
+        ]}
+      />
 
       <div className="grid gap-10 lg:grid-cols-[1fr_360px]">
         <div className="min-w-0">
@@ -57,7 +80,7 @@ export function CalculatorShell({ calculator, content, children, aside }: Calcul
               <h2 className="mt-2 text-xl font-bold text-primary">{content.tip.title}</h2>
               <p className="mt-3 text-sm leading-6 text-muted-foreground">{content.tip.body}</p>
               <Link
-                href="/#calculators"
+                href={CALCULATORS_DIRECTORY_PATH}
                 className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
               >
                 <ArrowLeft className="size-4" />
@@ -68,6 +91,11 @@ export function CalculatorShell({ calculator, content, children, aside }: Calcul
           {aside}
         </aside>
       </div>
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(applicationSchema) }}
+      />
     </main>
   )
 }

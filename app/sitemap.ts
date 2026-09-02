@@ -1,27 +1,22 @@
 import type { MetadataRoute } from 'next'
 
-import { liveCalculators } from '@/lib/calculators'
+import { publicRoutes } from '@/lib/routes'
 import { absoluteUrl } from '@/lib/site'
 
 /**
- * Built from the calculator registry. Planned calculators have no route, so
- * they are never listed here.
+ * Built entirely from the calculator registry via `publicRoutes()`: the
+ * homepage, the directory, one page per category that has live calculators,
+ * and one page per live calculator.
+ *
+ * Nothing here is hand-written, so a planned calculator can never leak in.
  */
 export default function sitemap(): MetadataRoute.Sitemap {
   const lastModified = new Date()
 
-  return [
-    {
-      url: absoluteUrl('/'),
-      lastModified,
-      changeFrequency: 'weekly',
-      priority: 1,
-    },
-    ...liveCalculators.map((calculator) => ({
-      url: absoluteUrl(calculator.href),
-      lastModified,
-      changeFrequency: 'monthly' as const,
-      priority: calculator.popular ? 0.9 : 0.7,
-    })),
-  ]
+  return publicRoutes().map((route) => ({
+    url: absoluteUrl(route.path),
+    lastModified,
+    changeFrequency: route.changeFrequency,
+    priority: route.priority,
+  }))
 }

@@ -7,7 +7,7 @@ import { Calculator, Menu, X } from 'lucide-react'
 import { CalculatorSearch } from '@/components/calculator-search'
 
 const navigation = [
-  { label: 'Calculators', href: '/#calculators' },
+  { label: 'Calculators', href: '/calculators' },
   { label: 'Categories', href: '/#categories' },
   { label: 'About', href: '/#about' },
   { label: 'FAQ', href: '/#faq' },

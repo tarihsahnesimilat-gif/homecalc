@@ -4,7 +4,9 @@ import { ArrowRight, Check, Sparkles } from 'lucide-react'
 import { CalculatorSearch } from '@/components/calculator-search'
 import { SiteHeader } from '@/components/site-header'
 import {
+  CALCULATORS_DIRECTORY_PATH,
   activeCategories,
+  categoryHref,
   getCategoryName,
   liveCalculators,
   plannedCalculators,
@@ -129,30 +131,44 @@ export default function Page() {
                 Find the right tool
               </h2>
             </div>
-            <Link href="#calculators" className="hidden text-sm font-semibold text-primary sm:block">
+            <Link
+              href={CALCULATORS_DIRECTORY_PATH}
+              className="hidden text-sm font-semibold text-primary sm:block"
+            >
               View all <ArrowRight className="ml-1 inline size-4" />
             </Link>
           </div>
           <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-            {activeCategories.map((category) => (
-              <div
-                key={category.id}
-                className="rounded-lg border border-border bg-card p-5 transition hover:-translate-y-0.5 hover:border-accent"
-              >
-                <category.icon className="size-5 text-accent" />
-                <h3 className="mt-5 font-semibold text-primary">{category.name}</h3>
-                <p className="mt-1 text-sm text-muted-foreground">{category.description}</p>
-                <p
-                  className={
-                    category.liveCount > 0
-                      ? 'mt-4 text-xs font-medium text-accent'
-                      : 'mt-4 text-xs font-medium text-muted-foreground'
-                  }
-                >
-                  {category.countLabel}
-                </p>
-              </div>
-            ))}
+            {activeCategories.map((category) => {
+              const cardClassName =
+                'rounded-lg border border-border bg-card p-5 transition hover:-translate-y-0.5 hover:border-accent'
+              const body = (
+                <>
+                  <category.icon className="size-5 text-accent" />
+                  <h3 className="mt-5 font-semibold text-primary">{category.name}</h3>
+                  <p className="mt-1 text-sm text-muted-foreground">{category.description}</p>
+                  <p
+                    className={
+                      category.liveCount > 0
+                        ? 'mt-4 text-xs font-medium text-accent'
+                        : 'mt-4 text-xs font-medium text-muted-foreground'
+                    }
+                  >
+                    {category.countLabel}
+                  </p>
+                </>
+              )
+
+              return category.liveCount > 0 ? (
+                <Link key={category.id} href={categoryHref(category.id)} className={cardClassName}>
+                  {body}
+                </Link>
+              ) : (
+                <div key={category.id} className={cardClassName}>
+                  {body}
+                </div>
+              )
+            })}
           </div>
         </section>
 
@@ -165,6 +181,12 @@ export default function Page() {
                   Start calculating
                 </h2>
               </div>
+              <Link
+                href={CALCULATORS_DIRECTORY_PATH}
+                className="hidden text-sm font-semibold text-secondary hover:underline sm:block"
+              >
+                Browse the directory <ArrowRight className="ml-1 inline size-4" />
+              </Link>
             </div>
             <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {showcase.map((calculator) =>

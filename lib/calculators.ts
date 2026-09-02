@@ -52,10 +52,13 @@ export type CalculatorCategoryId =
 export type CalculatorStatus = 'live' | 'planned'
 
 export interface CalculatorCategory {
+  /** Also the URL slug: /calculators/<id>. */
   id: CalculatorCategoryId
   name: string
   description: string
   icon: LucideIcon
+  seoTitle: string
+  seoDescription: string
 }
 
 export interface CalculatorDefinition {
@@ -73,6 +76,11 @@ export interface CalculatorDefinition {
    * more than category order. Category-mates fill any remaining slots.
    */
   related?: readonly string[]
+  /**
+   * Search aliases — the words people actually type. Used by search only and
+   * never rendered, so they cannot turn into keyword-stuffed page copy.
+   */
+  keywords?: readonly string[]
 }
 
 /** Everything except `href`, which is derived from the slug. */
@@ -82,6 +90,20 @@ export const CALCULATORS_BASE_PATH = '/calculators'
 
 export function calculatorHref(slug: string): string {
   return `${CALCULATORS_BASE_PATH}/${slug}`
+}
+
+/** The directory listing every live calculator. */
+export const CALCULATORS_DIRECTORY_PATH = CALCULATORS_BASE_PATH
+
+/**
+ * A category page lives at /calculators/<id>.
+ *
+ * Category ids and calculator slugs share this namespace, so a category id must
+ * never collide with a calculator slug. `categoryIdsAreDistinctFromSlugs` in the
+ * test suite enforces that.
+ */
+export function categoryHref(id: CalculatorCategoryId): string {
+  return `${CALCULATORS_BASE_PATH}/${id}`
 }
 
 // ---------------------------------------------------------------------------
@@ -94,42 +116,63 @@ export const categories: readonly CalculatorCategory[] = [
     name: 'Math Calculators',
     description: 'Everyday math made simple.',
     icon: Calculator,
+    seoTitle: 'Math Calculators — Percentages, Fractions, Ratios and More',
+    seoDescription:
+      'Free math calculators for percentages, fractions, ratios, averages and scientific work. Every tool runs in your browser with no sign-up.',
   },
   {
     id: 'finance',
     name: 'Financial Calculators',
     description: 'Make smarter money decisions.',
     icon: DollarSign,
+    seoTitle: 'Financial Calculators — Loans, Interest, Tips and Margins',
+    seoDescription:
+      'Free finance calculators for loan repayments, compound and simple interest, tips, discounts, profit margin and return on investment.',
   },
   {
     id: 'health',
     name: 'Health Calculators',
     description: 'Understand your health numbers.',
     icon: HeartPulse,
+    seoTitle: 'Health Calculators — BMI, BMR and Daily Calories',
+    seoDescription:
+      'Free health calculators for body mass index, basal metabolic rate and estimated daily calorie needs. Informational tools, not medical advice.',
   },
   {
     id: 'home',
     name: 'Home & Living',
     description: 'Plan projects with confidence.',
     icon: Home,
+    seoTitle: 'Home & Living Calculators',
+    seoDescription:
+      'Calculators for planning work around the home. More tools are on the way.',
   },
   {
     id: 'education',
     name: 'Education',
     description: 'Learn and solve step by step.',
     icon: GraduationCap,
+    seoTitle: 'Education Calculators — Grades and Study Tools',
+    seoDescription:
+      'Calculators for grades and coursework. More study tools are on the way.',
   },
   {
     id: 'date-time',
     name: 'Date & Time',
     description: 'Work out dates, ages, and durations.',
     icon: CalendarClock,
+    seoTitle: 'Date and Time Calculators — Age, Durations and Day Counts',
+    seoDescription:
+      'Free date calculators for working out an exact age, the gap between two dates, and counting days, weeks and months.',
   },
   {
     id: 'everyday',
     name: 'Everyday Tools',
     description: 'Quick answers for daily decisions.',
     icon: ShoppingBasket,
+    seoTitle: 'Everyday Calculators — Unit Conversion and Quick Answers',
+    seoDescription:
+      'Free everyday calculators, including a unit converter for length, weight, temperature and volume measurements.',
   },
 ]
 
@@ -141,6 +184,13 @@ const calculatorDefinitions: readonly CalculatorSource[] = [
   {
     name: 'Percentage Calculator',
     slug: 'percentage-calculator',
+    keywords: [
+      'percent',
+      'percentage',
+      'percent of',
+      'percentage of a number',
+      'percent calculator',
+    ],
     description: 'Calculate percentages, increases, decreases, and more.',
     category: 'math',
     icon: Percent,
@@ -150,6 +200,7 @@ const calculatorDefinitions: readonly CalculatorSource[] = [
   {
     name: 'Tip Calculator',
     slug: 'tip-calculator',
+    keywords: ['tip', 'gratuity', 'split the bill', 'bill split', 'service charge'],
     description: 'Split bills and calculate tips in seconds.',
     category: 'finance',
     icon: Receipt,
@@ -159,6 +210,7 @@ const calculatorDefinitions: readonly CalculatorSource[] = [
   {
     name: 'Discount Calculator',
     slug: 'discount-calculator',
+    keywords: ['discount', 'sale price', 'percent off', 'markdown', 'how much you save'],
     description: 'Work out sale prices and how much you save.',
     category: 'finance',
     icon: Tag,
@@ -168,6 +220,7 @@ const calculatorDefinitions: readonly CalculatorSource[] = [
   {
     name: 'Average Calculator',
     slug: 'average-calculator',
+    keywords: ['average', 'mean', 'arithmetic mean', 'sum of numbers', 'add up numbers'],
     description: 'Find the mean, sum, and count of any list of numbers.',
     category: 'math',
     icon: Sigma,
@@ -177,6 +230,13 @@ const calculatorDefinitions: readonly CalculatorSource[] = [
   {
     name: 'Percentage Change Calculator',
     slug: 'percentage-change-calculator',
+    keywords: [
+      'percentage change',
+      'percent increase',
+      'percent decrease',
+      'percentage difference',
+      'change between two numbers',
+    ],
     description: 'Measure the increase or decrease between two values.',
     category: 'math',
     icon: TrendingUp,
@@ -186,6 +246,7 @@ const calculatorDefinitions: readonly CalculatorSource[] = [
   {
     name: 'Fraction Calculator',
     slug: 'fraction-calculator',
+    keywords: ['fraction', 'fractions', 'add fractions', 'simplify fraction', 'lowest terms'],
     description: 'Add, subtract, multiply, and divide fractions exactly.',
     category: 'math',
     icon: Divide,
@@ -195,6 +256,7 @@ const calculatorDefinitions: readonly CalculatorSource[] = [
   {
     name: 'Ratio Calculator',
     slug: 'ratio-calculator',
+    keywords: ['ratio', 'proportion', 'scale a ratio', 'simplify ratio', 'aspect ratio'],
     description: 'Scale a ratio to a known value and simplify it.',
     category: 'math',
     icon: Ratio,
@@ -204,6 +266,7 @@ const calculatorDefinitions: readonly CalculatorSource[] = [
   {
     name: 'Profit Margin Calculator',
     slug: 'profit-margin-calculator',
+    keywords: ['profit margin', 'margin', 'gross margin', 'markup', 'profit'],
     description: 'Turn revenue and cost into profit and margin.',
     category: 'finance',
     icon: PiggyBank,
@@ -213,6 +276,7 @@ const calculatorDefinitions: readonly CalculatorSource[] = [
   {
     name: 'Simple Interest Calculator',
     slug: 'simple-interest-calculator',
+    keywords: ['simple interest', 'flat interest', 'principal rate time', 'interest on a loan'],
     description: 'Work out interest and the total owed over time.',
     category: 'finance',
     icon: Landmark,
@@ -222,6 +286,13 @@ const calculatorDefinitions: readonly CalculatorSource[] = [
   {
     name: 'Unit Converter',
     slug: 'unit-converter',
+    keywords: [
+      'unit converter',
+      'convert units',
+      'metric to imperial',
+      'length weight volume',
+      'temperature conversion',
+    ],
     description: 'Convert length, weight, temperature, and volume units.',
     category: 'everyday',
     icon: ArrowRightLeft,
@@ -231,6 +302,7 @@ const calculatorDefinitions: readonly CalculatorSource[] = [
   {
     name: 'BMI Calculator',
     slug: 'bmi-calculator',
+    keywords: ['bmi', 'body mass index', 'body mass', 'height and weight'],
     description: 'Check your body mass index against the standard categories.',
     category: 'health',
     icon: Scale,
@@ -241,6 +313,13 @@ const calculatorDefinitions: readonly CalculatorSource[] = [
   {
     name: 'BMR Calculator',
     slug: 'bmr-calculator',
+    keywords: [
+      'bmr',
+      'basal metabolic rate',
+      'resting metabolism',
+      'metabolic rate',
+      'mifflin st jeor',
+    ],
     description: 'Estimate the calories your body uses at rest.',
     category: 'health',
     icon: Flame,
@@ -251,6 +330,14 @@ const calculatorDefinitions: readonly CalculatorSource[] = [
   {
     name: 'Calorie Calculator',
     slug: 'calorie-calculator',
+    keywords: [
+      'calorie',
+      'calories',
+      'tdee',
+      'daily calories',
+      'energy needs',
+      'maintenance calories',
+    ],
     description: 'Estimate daily calorie needs from BMR and activity.',
     category: 'health',
     icon: Apple,
@@ -261,6 +348,13 @@ const calculatorDefinitions: readonly CalculatorSource[] = [
   {
     name: 'Compound Interest Calculator',
     slug: 'compound-interest-calculator',
+    keywords: [
+      'compound interest',
+      'compounding',
+      'investment growth',
+      'savings growth',
+      'future value',
+    ],
     description: 'Project how a balance grows as interest earns interest.',
     category: 'finance',
     icon: Coins,
@@ -271,6 +365,7 @@ const calculatorDefinitions: readonly CalculatorSource[] = [
   {
     name: 'Loan Payment Calculator',
     slug: 'loan-payment-calculator',
+    keywords: ['loan', 'monthly payment', 'mortgage payment', 'loan repayment', 'amortization'],
     description: 'Estimate monthly repayments and the total interest on a loan.',
     category: 'finance',
     icon: Banknote,
@@ -281,6 +376,7 @@ const calculatorDefinitions: readonly CalculatorSource[] = [
   {
     name: 'ROI Calculator',
     slug: 'roi-calculator',
+    keywords: ['roi', 'return on investment', 'investment return', 'gain percentage'],
     description: 'Turn an investment and its final value into a return percentage.',
     category: 'finance',
     icon: ChartLine,
@@ -291,6 +387,14 @@ const calculatorDefinitions: readonly CalculatorSource[] = [
   {
     name: 'Scientific Calculator',
     slug: 'scientific-calculator',
+    keywords: [
+      'scientific calculator',
+      'trigonometry',
+      'sin cos tan',
+      'square root',
+      'powers',
+      'exponent',
+    ],
     description: 'Powers, roots, trigonometry, and constants with full precedence.',
     category: 'math',
     icon: Calculator,
@@ -301,6 +405,7 @@ const calculatorDefinitions: readonly CalculatorSource[] = [
   {
     name: 'Mortgage Calculator',
     slug: 'mortgage-calculator',
+    keywords: ['mortgage', 'home loan', 'house payment'],
     description: 'Estimate monthly payments for your next home.',
     category: 'finance',
     icon: Home,
@@ -310,6 +415,7 @@ const calculatorDefinitions: readonly CalculatorSource[] = [
   {
     name: 'Age Calculator',
     slug: 'age-calculator',
+    keywords: ['age', 'how old am i', 'date of birth', 'birthday', 'exact age'],
     description: 'Find an exact age in years, months, and days.',
     category: 'date-time',
     icon: Cake,
@@ -320,6 +426,12 @@ const calculatorDefinitions: readonly CalculatorSource[] = [
   {
     name: 'Date Difference Calculator',
     slug: 'date-difference-calculator',
+    keywords: [
+      'date difference',
+      'between two dates',
+      'time between dates',
+      'duration between dates',
+    ],
     description: 'Measure the gap between two dates in years, months, and days.',
     category: 'date-time',
     icon: CalendarDays,
@@ -330,6 +442,7 @@ const calculatorDefinitions: readonly CalculatorSource[] = [
   {
     name: 'Days Between Dates Calculator',
     slug: 'days-between-dates-calculator',
+    keywords: ['days between dates', 'day count', 'count days', 'number of days'],
     description: 'Count the days, weeks, and remaining days between two dates.',
     category: 'date-time',
     icon: CalendarRange,
@@ -340,6 +453,7 @@ const calculatorDefinitions: readonly CalculatorSource[] = [
   {
     name: 'Grade Calculator',
     slug: 'grade-calculator',
+    keywords: ['grade', 'gpa', 'final grade', 'exam score'],
     description: 'Calculate grades and what you need on your final.',
     category: 'education',
     icon: GraduationCap,
@@ -429,6 +543,33 @@ export const activeCategories: readonly CategoryWithCount[] = categoriesWithCoun
 )
 
 /**
+ * Categories with at least one live calculator.
+ *
+ * These are exactly the categories that get a page, appear in the sitemap and
+ * are safe to link to. A category holding only planned calculators is listed on
+ * the homepage as "Coming soon" but never linked.
+ */
+export const categoriesWithLiveCalculators: readonly CategoryWithCount[] =
+  categoriesWithCounts.filter((category) => category.liveCount > 0)
+
+export function getLiveCalculatorsByCategory(
+  id: CalculatorCategoryId,
+): readonly CalculatorDefinition[] {
+  return liveCalculators.filter((calculator) => calculator.category === id)
+}
+
+/** Live calculators grouped by category, in registry order, for the directory. */
+export function groupLiveCalculatorsByCategory(): readonly {
+  category: CategoryWithCount
+  calculators: readonly CalculatorDefinition[]
+}[] {
+  return categoriesWithLiveCalculators.map((category) => ({
+    category,
+    calculators: getLiveCalculatorsByCategory(category.id),
+  }))
+}
+
+/**
  * Live calculators related to `slug`: same category first, then other popular
  * live calculators as filler. Never returns planned calculators.
  */
@@ -465,31 +606,60 @@ export function getRelatedCalculators(slug: string, limit = 4): readonly Calcula
  * Live calculators are ranked above planned ones so the useful tools surface
  * first; callers decide how (or whether) to present planned results.
  */
+/**
+ * Ranks a calculator against a search term. Lower is better; `null` means no
+ * match at all.
+ *
+ * The order is deliberate: an exact name wins, then an exact alias, then a name
+ * that starts with the term, then anything containing it. Everything is a plain
+ * string comparison, so results are deterministic and no search dependency is
+ * needed.
+ */
+function searchRank(calculator: CalculatorDefinition, term: string): number | null {
+  const name = calculator.name.toLowerCase()
+  const keywords = (calculator.keywords ?? []).map((keyword) => keyword.toLowerCase())
+
+  if (name === term) return 0
+  if (keywords.includes(term)) return 1
+  if (name.startsWith(term)) return 2
+  if (name.includes(term)) return 3
+  if (keywords.some((keyword) => keyword.includes(term))) return 4
+
+  const haystack = [
+    calculator.description,
+    getCategoryName(calculator.category),
+    calculator.category,
+  ]
+    .join(' ')
+    .toLowerCase()
+
+  return haystack.includes(term) ? 5 : null
+}
+
+/**
+ * Search across name, aliases, description and category.
+ *
+ * Live calculators always rank above planned ones, so the results people can
+ * actually use come first.
+ */
 export function searchCalculators(query: string, limit = 6): readonly CalculatorDefinition[] {
   const term = query.trim().toLowerCase()
   if (!term) return []
 
-  const matches = calculators.filter((calculator) => {
-    const haystack = [
-      calculator.name,
-      calculator.description,
-      getCategoryName(calculator.category),
-      calculator.category,
-    ]
-      .join(' ')
-      .toLowerCase()
+  const ranked = calculators
+    .map((calculator) => ({ calculator, rank: searchRank(calculator, term) }))
+    .filter(
+      (entry): entry is { calculator: CalculatorDefinition; rank: number } => entry.rank !== null,
+    )
 
-    return haystack.includes(term)
-  })
-
-  return matches
-    .slice()
+  return ranked
     .sort((a, b) => {
-      if (a.status !== b.status) return a.status === 'live' ? -1 : 1
-      const aStarts = a.name.toLowerCase().startsWith(term)
-      const bStarts = b.name.toLowerCase().startsWith(term)
-      if (aStarts !== bStarts) return aStarts ? -1 : 1
-      return a.name.localeCompare(b.name)
+      if (a.calculator.status !== b.calculator.status) {
+        return a.calculator.status === 'live' ? -1 : 1
+      }
+      if (a.rank !== b.rank) return a.rank - b.rank
+      return a.calculator.name.localeCompare(b.calculator.name)
     })
     .slice(0, limit)
+    .map((entry) => entry.calculator)
 }
