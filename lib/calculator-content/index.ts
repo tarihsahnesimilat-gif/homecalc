@@ -39,6 +39,16 @@ import { mortgageContent } from './mortgage.ts'
 import { percentageDifferenceContent } from './percentage-difference.ts'
 import { savingsContent } from './savings.ts'
 import { timeZoneContent } from './timezone.ts'
+import { areaContent } from './area.ts'
+import { calorieDeficitContent } from './calorie-deficit.ts'
+import { futureValueContent } from './future-value.ts'
+import { hoursContent } from './hours.ts'
+import { loanInterestContent } from './loan-interest.ts'
+import { markupContent } from './markup.ts'
+import { paceContent } from './pace.ts'
+import { percentagePointContent } from './percentage-point.ts'
+import { pricePerUnitContent } from './price-per-unit.ts'
+import { ratioToPercentageContent } from './ratio-to-percentage.ts'
 
 export type {
   CalculatorContent,
@@ -97,6 +107,16 @@ const contentEntries: readonly CalculatorContent[] = [
   percentageDifferenceContent,
   savingsContent,
   timeZoneContent,
+  areaContent,
+  calorieDeficitContent,
+  futureValueContent,
+  hoursContent,
+  loanInterestContent,
+  markupContent,
+  paceContent,
+  percentagePointContent,
+  pricePerUnitContent,
+  ratioToPercentageContent,
 ]
 
 export const calculatorContent: Readonly<Record<string, CalculatorContent>> =
@@ -147,4 +167,14 @@ export {
   percentageDifferenceContent,
   savingsContent,
   timeZoneContent,
+  areaContent,
+  calorieDeficitContent,
+  futureValueContent,
+  hoursContent,
+  loanInterestContent,
+  markupContent,
+  paceContent,
+  percentagePointContent,
+  pricePerUnitContent,
+  ratioToPercentageContent,
 }

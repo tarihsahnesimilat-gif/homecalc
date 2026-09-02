@@ -137,7 +137,7 @@ export default function Page() {
               View all <ArrowRight className="ml-1 inline size-4" />
             </Link>
           </div>
-          <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+          <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {activeCategories.map((category) => {
               const cardClassName =
                 'rounded-lg border border-border bg-card p-5 transition hover:-translate-y-0.5 hover:border-accent'

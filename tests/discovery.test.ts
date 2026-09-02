@@ -20,13 +20,20 @@ import {
 } from '../lib/calculators.ts'
 import { LEGAL_ROUTES, publicRoutes } from '../lib/routes.ts'
 
-const EXPECTED_CATEGORY_PAGES = ['math', 'finance', 'health', 'date-time', 'everyday']
+const EXPECTED_CATEGORY_PAGES = [
+  'math',
+  'finance',
+  'health',
+  'home',
+  'date-time',
+  'everyday',
+]
 
 // ---------------------------------------------------------------- Registry
-test('registry: 40 live calculators, each with a unique slug', () => {
-  assert.equal(liveCalculators.length, 40)
+test('registry: 50 live calculators, each with a unique slug', () => {
+  assert.equal(liveCalculators.length, 50)
   const slugs = liveCalculators.map((c: CalculatorDefinition) => c.slug)
-  assert.equal(new Set(slugs).size, 40)
+  assert.equal(new Set(slugs).size, 50)
 })
 
 test('registry: every live calculator sits in a category that exists', () => {
@@ -100,7 +107,7 @@ test('registry: category ids never collide with calculator slugs', () => {
 })
 
 // -------------------------------------------------------------- Categories
-test('categories: exactly five have live calculators and therefore pages', () => {
+test('categories: exactly six have live calculators and therefore pages', () => {
   assert.deepEqual(
     categoriesWithLiveCalculators.map((category) => category.id),
     EXPECTED_CATEGORY_PAGES,
@@ -133,7 +140,7 @@ test('categories: every live calculator appears in exactly one category page', (
     }
   }
 
-  assert.equal(seen.size, 40, 'not every live calculator is reachable from a category page')
+  assert.equal(seen.size, 50, 'not every live calculator is reachable from a category page')
 })
 
 test('categories: expected members', () => {
@@ -146,11 +153,15 @@ test('categories: expected members', () => {
     'bmi-calculator',
     'bmr-calculator',
     'calorie-calculator',
+    'calorie-deficit-calculator',
+    'pace-calculator',
   ])
+  assert.deepEqual(inCategory('home').sort(), ['area-calculator'])
   assert.deepEqual(inCategory('everyday').sort(), [
     'concrete-calculator',
     'currency-converter',
     'fuel-cost-calculator',
+    'price-per-unit-calculator',
     'unit-converter',
   ])
   assert.deepEqual(inCategory('date-time').sort(), [
@@ -158,12 +169,13 @@ test('categories: expected members', () => {
     'date-calculator',
     'date-difference-calculator',
     'days-between-dates-calculator',
+    'hours-calculator',
     'time-duration-calculator',
     'time-zone-converter',
     'work-hours-calculator',
   ])
-  assert.equal(inCategory('math').length, 12)
-  assert.equal(inCategory('finance').length, 14)
+  assert.equal(inCategory('math').length, 14)
+  assert.equal(inCategory('finance').length, 17)
 })
 
 test('categories: no planned calculator is listed on a category page', () => {
@@ -191,6 +203,16 @@ test('search: finds calculators by keyword and alias', () => {
     searchCalculators(query, 30).map((c: CalculatorDefinition) => c.slug)
 
   assert.equal(finds('percent of')[0], 'percentage-of-number-calculator')
+  assert.equal(finds('markup calculator')[0], 'markup-calculator')
+  assert.equal(finds('loan interest calculator')[0], 'loan-interest-calculator')
+  assert.equal(finds('present value')[0], 'future-value-calculator')
+  assert.equal(finds('price per unit')[0], 'price-per-unit-calculator')
+  assert.equal(finds('percentage point')[0], 'percentage-point-calculator')
+  assert.equal(finds('ratio to percentage')[0], 'ratio-to-percentage-calculator')
+  assert.equal(finds('running pace')[0], 'pace-calculator')
+  assert.equal(finds('calorie deficit')[0], 'calorie-deficit-calculator')
+  assert.equal(finds('total hours worked')[0], 'hours-calculator')
+  assert.equal(finds('square footage')[0], 'area-calculator')
   assert.equal(finds('percentage difference')[0], 'percentage-difference-calculator')
   assert.equal(finds('grade calculator')[0], 'grade-calculator')
   assert.equal(finds('mortgage payment')[0], 'mortgage-calculator')
@@ -302,12 +324,12 @@ test('links: every live calculator is reachable from its category page', () => {
 })
 
 // ----------------------------------------------------------------- Sitemap
-test('sitemap: exactly 50 public URLs', () => {
+test('sitemap: exactly 61 public URLs', () => {
   const routes = publicRoutes()
   assert.equal(
     routes.length,
-    50,
-    '1 homepage + 1 directory + 5 categories + 40 calculators + 3 legal pages',
+    61,
+    '1 homepage + 1 directory + 6 categories + 50 calculators + 3 legal pages',
   )
 })
 
@@ -340,7 +362,6 @@ test('sitemap: excludes planned calculators and pageless categories', () => {
     }
   }
   assert.ok(!paths.has('/calculators/education'), 'education has no live calculators')
-  assert.ok(!paths.has('/calculators/home'), 'home has no calculators at all')
 })
 
 test('sitemap: no duplicate URLs, and priorities are in range', () => {
