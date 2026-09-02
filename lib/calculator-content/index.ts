@@ -1,14 +1,24 @@
-import type { CalculatorContent } from './types'
-import { averageContent } from './average'
-import { discountContent } from './discount'
-import { fractionContent } from './fraction'
-import { percentageContent } from './percentage'
-import { percentageChangeContent } from './percentage-change'
-import { profitMarginContent } from './profit-margin'
-import { ratioContent } from './ratio'
-import { simpleInterestContent } from './simple-interest'
-import { tipContent } from './tip'
-import { unitConverterContent } from './unit-converter'
+import type { CalculatorContent } from './types.ts'
+import { ageContent } from './age.ts'
+import { averageContent } from './average.ts'
+import { bmiContent } from './bmi.ts'
+import { bmrContent } from './bmr.ts'
+import { calorieContent } from './calorie.ts'
+import { compoundInterestContent } from './compound-interest.ts'
+import { dateDifferenceContent } from './date-difference.ts'
+import { daysBetweenContent } from './days-between.ts'
+import { discountContent } from './discount.ts'
+import { fractionContent } from './fraction.ts'
+import { loanPaymentContent } from './loan-payment.ts'
+import { percentageContent } from './percentage.ts'
+import { percentageChangeContent } from './percentage-change.ts'
+import { profitMarginContent } from './profit-margin.ts'
+import { ratioContent } from './ratio.ts'
+import { roiContent } from './roi.ts'
+import { scientificContent } from './scientific.ts'
+import { simpleInterestContent } from './simple-interest.ts'
+import { tipContent } from './tip.ts'
+import { unitConverterContent } from './unit-converter.ts'
 
 export type {
   CalculatorContent,
@@ -18,7 +28,7 @@ export type {
   CalculatorFormula,
   CalculatorHowTo,
   CalculatorHowToStep,
-} from './types'
+} from './types.ts'
 
 /**
  * Registry of calculator content, keyed by slug.
@@ -37,6 +47,16 @@ const contentEntries: readonly CalculatorContent[] = [
   profitMarginContent,
   simpleInterestContent,
   unitConverterContent,
+  compoundInterestContent,
+  loanPaymentContent,
+  roiContent,
+  bmiContent,
+  bmrContent,
+  calorieContent,
+  ageContent,
+  dateDifferenceContent,
+  daysBetweenContent,
+  scientificContent,
 ]
 
 export const calculatorContent: Readonly<Record<string, CalculatorContent>> =
@@ -57,4 +77,14 @@ export {
   profitMarginContent,
   simpleInterestContent,
   unitConverterContent,
+  compoundInterestContent,
+  loanPaymentContent,
+  roiContent,
+  bmiContent,
+  bmrContent,
+  calorieContent,
+  ageContent,
+  dateDifferenceContent,
+  daysBetweenContent,
+  scientificContent,
 }

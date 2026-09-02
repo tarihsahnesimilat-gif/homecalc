@@ -1,4 +1,4 @@
-import type { CalculatorContent } from './types'
+import type { CalculatorContent } from './types.ts'
 
 export const averageContent: CalculatorContent = {
   slug: 'average-calculator',

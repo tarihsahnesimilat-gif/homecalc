@@ -1,4 +1,5 @@
 import { type CalculatorOutcome, invalid, isBlank, ok } from '../calculator-validation.ts'
+import { normalizePrecision } from './precision.ts'
 
 export type UnitCategoryId = 'length' | 'weight' | 'temperature' | 'volume'
 
@@ -122,18 +123,7 @@ export function getUnit(category: UnitCategory, unitId: string): UnitDefinition 
   return category.units.find((unit) => unit.id === unitId) ?? category.units[0]
 }
 
-/**
- * Rounds away floating-point noise without touching real precision.
- *
- * Every conversion runs two chained operations, which can turn an exact result
- * into something like 12.000000000000002. A double carries 15 to 17 significant
- * digits, so rounding to 12 discards only the accumulated error — far more
- * precision is kept than any measurement needs, or than the six decimal places
- * actually displayed.
- */
-export function normalizePrecision(value: number): number {
-  return Number.isFinite(value) ? Number(value.toPrecision(12)) : value
-}
+export { normalizePrecision }
 
 /** Converts by routing through the category's base unit. */
 export function convert(

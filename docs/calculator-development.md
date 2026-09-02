@@ -37,6 +37,10 @@ Add one entry to `calculatorDefinitions` in `lib/calculators.ts`:
 
 `href` is derived from `slug`, so a dead `#` link is impossible.
 
+Add `related: ['other-slug']` when a specific pairing matters more than
+category order — Loan Payment to Compound Interest, say. Curated slugs are
+shown first and category-mates fill the remaining slots.
+
 ### 2. Write the calculation module
 
 Create `lib/calculations/loan.ts`. Export a pure calculation function and an
@@ -60,12 +64,16 @@ export function evaluateLoan(rawPrincipal: string, rawRate: string): CalculatorO
 }
 ```
 
-Two conventions matter here:
+Three conventions matter here:
 
 - **Import siblings with the `.ts` extension.** That is what lets `node --test`
-  run these modules directly; Next and `tsc` both accept it.
+  run these modules directly; Next and `tsc` both accept it. The same applies
+  inside `lib/calculator-content/`.
 - **Never import from `lib/format.ts` or any component.** Calculation modules
   return numbers and structured data; formatting is the form's job.
+- **Avoid constructor parameter properties.** Node's type-stripping runner
+  rejects `constructor(private readonly x: T)`; declare the field and assign it
+  in the body instead. Everything else in TypeScript's type syntax is fine.
 
 `CalculatorOutcome<T>` has exactly three states — `empty` (not enough input
 yet, show a placeholder), `invalid` (with a message for the user), and `ok`
@@ -111,10 +119,11 @@ Available primitives (`@/components/calculator`):
 | --- | --- |
 | `NumberInput` | Any numeric field. Handles label association, hint text, `min`/`max`/`step`, `integer`. |
 | `AmountInput` | Money. A `NumberInput` defaulting to non-negative, with an optional currency in the label. |
-| `CalculatorSelect` | A labelled native select. |
 | `CalculatorToggle` | Segmented mode switcher (percentage modes, time units). |
 | `CalculatorResult` | The headline result. The page's only `aria-live` region. |
 | `ResultBreakdown` | The supporting figures grid beneath it. |
+| `CalculatorSelect` | A labelled native select. |
+| `DateInput` | A labelled native date field, always reporting `YYYY-MM-DD`. |
 | `CalculatorReset` | The reset control. You supply what resetting means. |
 
 Only `CalculatorResult` announces changes. Do not add a second live region —
@@ -138,6 +147,18 @@ Once the registry entry and content file exist, these update themselves:
 - Breadcrumb, `<h1>`, canonical URL, OpenGraph tags, FAQ JSON-LD
 
 There is no second list to update anywhere.
+
+## Working with dates
+
+Never build date logic on `Date` arithmetic or millisecond division. Use
+`lib/calculations/date-utils.ts`, which works on plain `{ year, month, day }`
+records: `parseDateInput`, `differenceInDays`, `calendarSpan`, `addMonths`,
+`daysInMonth` and `isLeapYear`. Timestamps carry a timezone, which is how the
+same two calendar dates end up a day apart on different machines.
+
+If a form needs today's date, set it in a `useEffect` rather than during
+render — reading the clock while rendering makes the server and client markup
+disagree.
 
 ## Before you commit
 

@@ -1,9 +1,17 @@
 import {
+  Apple,
   ArrowRightLeft,
+  Banknote,
+  Cake,
   Calculator,
   CalendarClock,
+  CalendarDays,
+  CalendarRange,
+  ChartLine,
+  Coins,
   Divide,
   DollarSign,
+  Flame,
   GraduationCap,
   HeartPulse,
   Home,
@@ -12,6 +20,7 @@ import {
   PiggyBank,
   Ratio,
   Receipt,
+  Scale,
   ShoppingBasket,
   Sigma,
   Tag,
@@ -59,6 +68,11 @@ export interface CalculatorDefinition {
   icon: LucideIcon
   popular: boolean
   status: CalculatorStatus
+  /**
+   * Slugs to surface first in related calculators, for pairings that matter
+   * more than category order. Category-mates fill any remaining slots.
+   */
+  related?: readonly string[]
 }
 
 /** Everything except `href`, which is derived from the slug. */
@@ -217,11 +231,72 @@ const calculatorDefinitions: readonly CalculatorSource[] = [
   {
     name: 'BMI Calculator',
     slug: 'bmi-calculator',
-    description: 'Check your body mass index and healthy range.',
+    description: 'Check your body mass index against the standard categories.',
     category: 'health',
-    icon: HeartPulse,
+    icon: Scale,
     popular: true,
-    status: 'planned',
+    status: 'live',
+    related: ['bmr-calculator', 'calorie-calculator'],
+  },
+  {
+    name: 'BMR Calculator',
+    slug: 'bmr-calculator',
+    description: 'Estimate the calories your body uses at rest.',
+    category: 'health',
+    icon: Flame,
+    popular: false,
+    status: 'live',
+    related: ['calorie-calculator', 'bmi-calculator'],
+  },
+  {
+    name: 'Calorie Calculator',
+    slug: 'calorie-calculator',
+    description: 'Estimate daily calorie needs from BMR and activity.',
+    category: 'health',
+    icon: Apple,
+    popular: true,
+    status: 'live',
+    related: ['bmr-calculator', 'bmi-calculator'],
+  },
+  {
+    name: 'Compound Interest Calculator',
+    slug: 'compound-interest-calculator',
+    description: 'Project how a balance grows as interest earns interest.',
+    category: 'finance',
+    icon: Coins,
+    popular: true,
+    status: 'live',
+    related: ['simple-interest-calculator', 'loan-payment-calculator'],
+  },
+  {
+    name: 'Loan Payment Calculator',
+    slug: 'loan-payment-calculator',
+    description: 'Estimate monthly repayments and the total interest on a loan.',
+    category: 'finance',
+    icon: Banknote,
+    popular: true,
+    status: 'live',
+    related: ['compound-interest-calculator', 'simple-interest-calculator'],
+  },
+  {
+    name: 'ROI Calculator',
+    slug: 'roi-calculator',
+    description: 'Turn an investment and its final value into a return percentage.',
+    category: 'finance',
+    icon: ChartLine,
+    popular: false,
+    status: 'live',
+    related: ['profit-margin-calculator', 'compound-interest-calculator'],
+  },
+  {
+    name: 'Scientific Calculator',
+    slug: 'scientific-calculator',
+    description: 'Powers, roots, trigonometry, and constants with full precedence.',
+    category: 'math',
+    icon: Calculator,
+    popular: true,
+    status: 'live',
+    related: ['percentage-calculator', 'fraction-calculator', 'ratio-calculator'],
   },
   {
     name: 'Mortgage Calculator',
@@ -235,11 +310,32 @@ const calculatorDefinitions: readonly CalculatorSource[] = [
   {
     name: 'Age Calculator',
     slug: 'age-calculator',
-    description: 'Find your exact age in years, months, and days.',
-    category: 'math',
-    icon: Calculator,
+    description: 'Find an exact age in years, months, and days.',
+    category: 'date-time',
+    icon: Cake,
+    popular: true,
+    status: 'live',
+    related: ['date-difference-calculator', 'days-between-dates-calculator'],
+  },
+  {
+    name: 'Date Difference Calculator',
+    slug: 'date-difference-calculator',
+    description: 'Measure the gap between two dates in years, months, and days.',
+    category: 'date-time',
+    icon: CalendarDays,
     popular: false,
-    status: 'planned',
+    status: 'live',
+    related: ['days-between-dates-calculator', 'age-calculator'],
+  },
+  {
+    name: 'Days Between Dates Calculator',
+    slug: 'days-between-dates-calculator',
+    description: 'Count the days, weeks, and remaining days between two dates.',
+    category: 'date-time',
+    icon: CalendarRange,
+    popular: false,
+    status: 'live',
+    related: ['date-difference-calculator', 'age-calculator'],
   },
   {
     name: 'Grade Calculator',
@@ -342,12 +438,26 @@ export function getRelatedCalculators(slug: string, limit = 4): readonly Calcula
 
   if (!current) return candidates.slice(0, limit)
 
+  // Curated pairings first, then category-mates, then anything else live.
+  const curated = (current.related ?? [])
+    .map((relatedSlug) => candidates.find((calculator) => calculator.slug === relatedSlug))
+    .filter((calculator): calculator is CalculatorDefinition => calculator !== undefined)
+
   const sameCategory = candidates.filter(
     (calculator) => calculator.category === current.category,
   )
   const others = candidates.filter((calculator) => calculator.category !== current.category)
 
-  return [...sameCategory, ...others].slice(0, limit)
+  const ordered = [...curated, ...sameCategory, ...others]
+  const seen = new Set<string>()
+
+  return ordered
+    .filter((calculator) => {
+      if (seen.has(calculator.slug)) return false
+      seen.add(calculator.slug)
+      return true
+    })
+    .slice(0, limit)
 }
 
 /**
