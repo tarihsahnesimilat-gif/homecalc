@@ -11,6 +11,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 
 import { liveCalculators, categoriesWithLiveCalculators } from '../lib/calculators.ts'
+import { LEGAL_ROUTES } from '../lib/routes.ts'
 
 const BUILD_DIR = path.join(process.cwd(), '.next', 'server', 'app')
 const hasBuild = fs.existsSync(path.join(BUILD_DIR, 'calculators.html'))
@@ -28,7 +29,14 @@ function jsonLdTypes(html: string): string[] {
 
 const calculatorPages = () => liveCalculators.map((c) => `calculators/${c.slug}.html`)
 const categoryPages = () => categoriesWithLiveCalculators.map((c) => `calculators/${c.id}.html`)
-const allPages = () => ['index.html', 'calculators.html', ...categoryPages(), ...calculatorPages()]
+const legalPages = () => LEGAL_ROUTES.map((route) => `${route.slice(1)}.html`)
+const allPages = () => [
+  'index.html',
+  'calculators.html',
+  ...categoryPages(),
+  ...calculatorPages(),
+  ...legalPages(),
+]
 
 test('rendered: every public page carries complete metadata', { skip: !hasBuild }, () => {
   for (const page of allPages()) {
@@ -129,6 +137,23 @@ test('rendered: each category page links to its own calculators only', { skip: !
 test('rendered: no page contains a dead anchor', { skip: !hasBuild }, () => {
   for (const page of allPages()) {
     assert.ok(!read(page).includes('href="#"'), `${page} contains href="#"`)
+  }
+})
+
+test('rendered: every page carries the footer with legal links', { skip: !hasBuild }, () => {
+  for (const page of allPages()) {
+    const html = read(page)
+    for (const legal of LEGAL_ROUTES) {
+      assert.ok(html.includes(`href="${legal}"`), `${page} does not link to ${legal}`)
+    }
+    assert.ok(html.includes('href="/calculators"'), `${page} does not link to the directory`)
+  }
+})
+
+test('rendered: legal pages are indexable', { skip: !hasBuild }, () => {
+  for (const page of legalPages()) {
+    const html = read(page)
+    assert.ok(!/name="robots"[^>]*noindex/.test(html), `${page} is marked noindex`)
   }
 })
 

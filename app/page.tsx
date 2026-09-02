@@ -303,25 +303,6 @@ export default function Page() {
         </section>
       </main>
 
-      <footer className="border-t border-border bg-background">
-        <div className="mx-auto flex max-w-6xl flex-col gap-3 px-5 py-8 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between lg:px-8">
-          <p>© 2026 CalculatorHub. Simple tools for everyday life.</p>
-          <nav aria-label="Footer" className="flex gap-5">
-            <Link href="#about" className="hover:text-primary">
-              About
-            </Link>
-            <Link href="#calculators" className="hover:text-primary">
-              Calculators
-            </Link>
-            <Link href="#categories" className="hover:text-primary">
-              Categories
-            </Link>
-            <Link href="#faq" className="hover:text-primary">
-              FAQ
-            </Link>
-          </nav>
-        </div>
-      </footer>
     </>
   )
 }

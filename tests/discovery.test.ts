@@ -18,7 +18,7 @@ import {
   liveCalculators,
   searchCalculators,
 } from '../lib/calculators.ts'
-import { publicRoutes } from '../lib/routes.ts'
+import { LEGAL_ROUTES, publicRoutes } from '../lib/routes.ts'
 
 const EXPECTED_CATEGORY_PAGES = ['math', 'finance', 'health', 'date-time', 'everyday']
 
@@ -285,9 +285,20 @@ test('links: every live calculator is reachable from its category page', () => {
 })
 
 // ----------------------------------------------------------------- Sitemap
-test('sitemap: exactly 37 public URLs', () => {
+test('sitemap: exactly 40 public URLs', () => {
   const routes = publicRoutes()
-  assert.equal(routes.length, 37, '1 homepage + 1 directory + 5 categories + 30 calculators')
+  assert.equal(
+    routes.length,
+    40,
+    '1 homepage + 1 directory + 5 categories + 30 calculators + 3 legal pages',
+  )
+})
+
+test('sitemap: the legal pages are listed and indexable', () => {
+  const paths = publicRoutes().map((route) => route.path)
+  for (const legal of LEGAL_ROUTES) {
+    assert.ok(paths.includes(legal), `missing ${legal}`)
+  }
 })
 
 test('sitemap: contains the homepage, directory, categories and calculators', () => {

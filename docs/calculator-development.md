@@ -281,6 +281,54 @@ If a form needs today's date, set it in a `useEffect` rather than during
 render — reading the clock while rendering makes the server and client markup
 disagree.
 
+## Production and launch
+
+### Site URL
+
+`lib/site.ts` reads `NEXT_PUBLIC_SITE_URL` at build time and falls back to a
+placeholder domain. **Set it in the hosting provider's environment before going
+live**, or every canonical URL, OpenGraph tag and sitemap entry will point at
+the placeholder. It holds no secret, needs no local value, and a trailing slash
+is stripped for you.
+
+### Analytics
+
+`@vercel/analytics` is already wired into `app/layout.tsx` and rendered only
+when `NODE_ENV === 'production'`. It needs no key and no local configuration,
+and it never sees calculator inputs — those stay in the browser. That is the
+integration point; do not add a second one. Swapping providers means changing
+that one line.
+
+Google Search Console needs no application code: verify the domain through DNS
+or the hosting provider, then submit `/sitemap.xml`.
+
+### Where ads can go without breaking anything
+
+`CalculatorShell` takes an optional `aside`, rendered below the tip card in the
+sidebar. That is the natural slot for a future ad unit: it is outside the
+calculator, below the result, and collapses under the main column on mobile.
+Do not place anything between the inputs and the result — the answer is why
+people are on the page. No placeholder markup exists today, and none should be
+added until there is a real unit to serve.
+
+### Legal pages
+
+`/privacy`, `/terms` and `/disclaimer` use the shared `LegalPage` component and
+are listed in `lib/routes.ts` via `LEGAL_ROUTES`, so the sitemap and footer pick
+them up automatically. They deliberately name no company, address or legal
+entity. If the site gains an operator identity, add it to `siteConfig` rather
+than hard-coding it into three pages.
+
+### Focus and footer
+
+A single `:focus-visible` rule in `globals.css` gives links, buttons, tabs and
+summaries a visible keyboard focus ring. It uses `:where()`, so its specificity
+is zero and a component can still override it.
+
+`SiteFooter` renders from the root layout, so every route carries it — that is
+what keeps the legal pages reachable from anywhere. Pages should not add their
+own footer.
+
 ## Before you commit
 
 ```powershell

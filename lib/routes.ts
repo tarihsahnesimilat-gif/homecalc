@@ -13,6 +13,9 @@ export interface PublicRoute {
   priority: number
 }
 
+/** Indexable, but rarely changing and low priority next to the calculators. */
+export const LEGAL_ROUTES = ['/privacy', '/terms', '/disclaimer'] as const
+
 /**
  * Every public route, derived from the calculator registry.
  *
@@ -34,6 +37,11 @@ export function publicRoutes(): readonly PublicRoute[] {
       path: calculator.href,
       changeFrequency: 'monthly' as const,
       priority: calculator.popular ? 0.9 : 0.7,
+    })),
+    ...LEGAL_ROUTES.map((path) => ({
+      path,
+      changeFrequency: 'monthly' as const,
+      priority: 0.3,
     })),
   ]
 }

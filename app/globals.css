@@ -160,4 +160,10 @@
   body {
     @apply bg-background text-foreground;
   }
+  /* Keyboard users need to see where they are. Inputs style their own focus
+     ring; this covers links, buttons, tabs and disclosure summaries, which
+     otherwise fall back to whatever the browser happens to draw. */
+  :where(a, button, summary, [role='tab']):focus-visible {
+    @apply outline-2 outline-offset-2 outline-ring;
+  }
 }

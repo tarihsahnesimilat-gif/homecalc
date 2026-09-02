@@ -28,7 +28,7 @@ export function ResultBreakdown({ items, columns = 3, className }: ResultBreakdo
           <dt className="text-xs font-medium text-muted-foreground">{item.term}</dt>
           <dd
             className={cn(
-              'mt-1 text-xl font-bold',
+              'mt-1 text-xl font-bold break-words',
               item.negative ? 'text-destructive' : 'text-primary',
             )}
           >

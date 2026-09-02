@@ -756,6 +756,9 @@ export function groupLiveCalculatorsByCategory(): readonly {
  * Live calculators related to `slug`: same category first, then other popular
  * live calculators as filler. Never returns planned calculators.
  */
+/** Never leave a calculator with fewer than this many onward links. */
+const MINIMUM_RELATED = 2
+
 export function getRelatedCalculators(slug: string, limit = 4): readonly CalculatorDefinition[] {
   const current = getCalculatorBySlug(slug)
   const candidates = liveCalculators.filter((calculator) => calculator.slug !== slug)
@@ -772,16 +775,27 @@ export function getRelatedCalculators(slug: string, limit = 4): readonly Calcula
   )
   const others = candidates.filter((calculator) => calculator.category !== current.category)
 
-  const ordered = [...curated, ...sameCategory, ...others]
   const seen = new Set<string>()
-
-  return ordered
-    .filter((calculator) => {
+  const dedupe = (list: readonly CalculatorDefinition[]) =>
+    list.filter((calculator) => {
       if (seen.has(calculator.slug)) return false
       seen.add(calculator.slug)
       return true
     })
-    .slice(0, limit)
+
+  // Curated pairings and category-mates are the only genuinely relevant
+  // suggestions, so the list stops there rather than padding to `limit` with
+  // whatever happens to come next in the registry.
+  const relevant = dedupe([...curated, ...sameCategory]).slice(0, limit)
+  if (relevant.length >= MINIMUM_RELATED) return relevant
+
+  // A calculator alone in its category would otherwise be a dead end, so top
+  // up to the minimum with popular calculators from elsewhere.
+  const fallback = dedupe(
+    others.slice().sort((a, b) => Number(b.popular) - Number(a.popular)),
+  )
+
+  return [...relevant, ...fallback].slice(0, MINIMUM_RELATED)
 }
 
 /**
