@@ -3,7 +3,7 @@ import type { Metadata, Viewport } from 'next'
 
 import { AdSenseScript } from '@/components/adsense'
 import { SiteFooter } from '@/components/site-footer'
-import { googleSiteVerification, siteConfig } from '@/lib/site'
+import { adsenseClientId, googleSiteVerification, siteConfig } from '@/lib/site'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -20,8 +20,18 @@ export const metadata: Metadata = {
   generator: 'Next.js',
   publisher: siteConfig.publisher,
   alternates: { canonical: '/' },
-  /** Search Console ownership, when the HTML-tag method is used. */
-  ...(googleSiteVerification ? { verification: { google: googleSiteVerification } } : {}),
+  /**
+   * Site-ownership tags. Search Console's HTML-tag method, and the AdSense
+   * account meta so whichever verification method AdSense offers will pass.
+   */
+  ...(googleSiteVerification || adsenseClientId
+    ? {
+        verification: {
+          ...(googleSiteVerification ? { google: googleSiteVerification } : {}),
+          ...(adsenseClientId ? { other: { 'google-adsense-account': adsenseClientId } } : {}),
+        },
+      }
+    : {}),
   openGraph: {
     title: 'HomeCalc — Numbers made simple',
     description: 'Free, fast, and easy-to-use calculators for everyday life.',
@@ -66,11 +76,11 @@ export default function RootLayout({
       <head>
         {/* Opens the connection to the ad server before the tag asks for it. */}
         <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossOrigin="" />
+        <AdSenseScript />
       </head>
       <body className="flex min-h-screen flex-col font-sans antialiased">
         <div className="flex-1">{children}</div>
         <SiteFooter />
-        <AdSenseScript />
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>

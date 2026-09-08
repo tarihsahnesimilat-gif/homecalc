@@ -1,18 +1,20 @@
-import Script from 'next/script'
-
 import { adsenseClientId } from '@/lib/site'
 
 /**
- * Loads the AdSense tag once, from the root layout.
+ * The AdSense tag, rendered inside the document head from the root layout.
+ *
+ * Deliberately a plain `<script async>` rather than `next/script`: Google's
+ * site verification fetches the page and looks for this tag between the
+ * `<head>` tags, and `next/script`'s `afterInteractive` strategy puts it at the
+ * end of the body instead. `async` keeps it off the critical path anyway, so
+ * nothing is lost by placing it where Google expects it.
  *
  * Renders nothing until `NEXT_PUBLIC_ADSENSE_ID` is set, so previews and local
- * development never call Google, and a deployment that has not been issued a
- * publisher id cannot ship a broken tag. `afterInteractive` keeps the script
- * off the critical path — ad scripts are the usual cause of a bad LCP, and page
- * experience is part of what an AdSense reviewer looks at.
+ * development never call Google and a deployment without a publisher id cannot
+ * ship a broken tag.
  *
  * With Auto ads enabled in the AdSense dashboard this tag alone is enough to
- * place ads; `<AdUnit />` below is for slots you want to position yourself.
+ * place ads; `<AdUnit />` is for slots you want to position yourself.
  */
 export function AdSenseScript() {
   if (!adsenseClientId) {
@@ -20,10 +22,8 @@ export function AdSenseScript() {
   }
 
   return (
-    <Script
-      id="adsbygoogle-init"
+    <script
       async
-      strategy="afterInteractive"
       crossOrigin="anonymous"
       src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClientId}`}
     />
