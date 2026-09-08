@@ -37,14 +37,30 @@ export const siteConfig = {
 } as const
 
 /**
- * Google AdSense publisher id, e.g. `ca-pub-1234567890123456`.
+ * Google AdSense publisher id, in the two spellings the two consumers need.
+ *
+ * AdSense shows the same number as `pub-0000000000000000` in the dashboard and
+ * as `ca-pub-0000000000000000` in the code snippet, and it is easy to paste the
+ * wrong one. The ad tag needs the `ca-` form and ads.txt needs it without, so
+ * normalise once here and let either spelling be configured.
  *
  * Set `NEXT_PUBLIC_ADSENSE_ID` in the hosting provider's environment settings
- * once AdSense has issued the id. While it is unset the ad loader renders
- * nothing and `/ads.txt` stays empty, so a half-configured deployment can never
- * publish a wrong publisher id — which is itself an AdSense policy problem.
+ * once AdSense has issued the id, then redeploy — `NEXT_PUBLIC_*` values are
+ * baked in at build time, so adding the variable alone changes nothing. While
+ * it is unset the ad loader renders nothing and `/ads.txt` stays empty, so a
+ * half-configured deployment can never publish a wrong publisher id, which is
+ * itself an AdSense policy problem.
  */
-export const adsenseClientId = process.env.NEXT_PUBLIC_ADSENSE_ID?.trim() ?? ''
+const rawAdsenseId = process.env.NEXT_PUBLIC_ADSENSE_ID?.trim().replace(/^ca-/, '') ?? ''
+
+/** Anything that is not a `pub-…` id is treated as unset rather than shipped. */
+const hasAdsenseId = /^pub-\d{10,}$/.test(rawAdsenseId)
+
+/** `ca-pub-…` — the form the ad tag's `client` parameter expects. */
+export const adsenseClientId = hasAdsenseId ? `ca-${rawAdsenseId}` : ''
+
+/** `pub-…` — the form the ads.txt seller line expects. */
+export const adsensePublisherId = hasAdsenseId ? rawAdsenseId : ''
 
 /** Google Search Console HTML-tag verification token, if that method is used. */
 export const googleSiteVerification = process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION?.trim() ?? ''

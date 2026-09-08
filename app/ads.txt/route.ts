@@ -1,4 +1,4 @@
-import { adsenseClientId } from '@/lib/site'
+import { adsensePublisherId } from '@/lib/site'
 
 /**
  * Serves `/ads.txt` from the configured publisher id.
@@ -12,8 +12,8 @@ import { adsenseClientId } from '@/lib/site'
 export const dynamic = 'force-static'
 
 export function GET(): Response {
-  const body = adsenseClientId
-    ? `google.com, ${adsenseClientId.replace(/^ca-/, '')}, DIRECT, f08c47fec0942fa0\n`
+  const body = adsensePublisherId
+    ? `google.com, ${adsensePublisherId}, DIRECT, f08c47fec0942fa0\n`
     : '# No authorised ad sellers configured yet.\n'
 
   return new Response(body, {
