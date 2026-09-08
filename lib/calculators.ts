@@ -54,7 +54,7 @@ import {
 } from 'lucide-react'
 
 /**
- * Central source of truth for every calculator on CalculatorHub.
+ * Central source of truth for every calculator on HomeCalc.
  *
  * Adding a calculator means adding one entry to `calculatorDefinitions` below.
  * The homepage, categories, search, related calculators and the sitemap all

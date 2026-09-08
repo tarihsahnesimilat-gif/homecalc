@@ -13,8 +13,16 @@ export interface PublicRoute {
   priority: number
 }
 
-/** Indexable, but rarely changing and low priority next to the calculators. */
-export const LEGAL_ROUTES = ['/privacy', '/terms', '/disclaimer'] as const
+/**
+ * The trust pages: who runs the site, how to reach them, and the terms.
+ *
+ * AdSense and every other ad network look for these, so they are indexable and
+ * listed in the sitemap even though they change rarely and rank for nothing.
+ * `/about` and `/contact` sit above the pure legal pages in priority because
+ * they carry real content a reader might actually want.
+ */
+export const INFO_ROUTES = ['/about', '/contact'] as const
+export const LEGAL_ROUTES = ['/privacy', '/cookies', '/terms', '/disclaimer'] as const
 
 /**
  * Every public route, derived from the calculator registry.
@@ -37,6 +45,11 @@ export function publicRoutes(): readonly PublicRoute[] {
       path: calculator.href,
       changeFrequency: 'monthly' as const,
       priority: calculator.popular ? 0.9 : 0.7,
+    })),
+    ...INFO_ROUTES.map((path) => ({
+      path,
+      changeFrequency: 'monthly' as const,
+      priority: 0.5,
     })),
     ...LEGAL_ROUTES.map((path) => ({
       path,

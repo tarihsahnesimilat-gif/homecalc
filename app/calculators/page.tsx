@@ -13,9 +13,9 @@ import {
 } from '@/lib/calculators'
 import { OG_IMAGE, absoluteUrl } from '@/lib/site'
 
-const TITLE = 'All Calculators — The Full CalculatorHub Directory'
+const TITLE = 'All Calculators — The Full HomeCalc Directory'
 const DESCRIPTION =
-  'Every CalculatorHub tool in one place, grouped by category: math, finance, health, date and time, and everyday conversions. All free, all instant, no sign-up.'
+  'Every HomeCalc tool in one place, grouped by category: math, finance, health, date and time, and everyday conversions. All free, all instant, no sign-up.'
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -66,7 +66,7 @@ export default function CalculatorsDirectoryPage() {
           All Calculators
         </h1>
         <p className="mt-4 max-w-2xl text-lg leading-8 text-muted-foreground">
-          Every CalculatorHub tool, grouped by what it helps you work out. There are{' '}
+          Every HomeCalc tool, grouped by what it helps you work out. There are{' '}
           {liveCalculators.length} calculators available right now — each one runs entirely in your
           browser, with the formula and worked examples on the page.
         </p>

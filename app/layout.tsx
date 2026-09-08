@@ -1,24 +1,30 @@
 import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
 
+import { AdSenseScript } from '@/components/adsense'
 import { SiteFooter } from '@/components/site-footer'
-import { siteConfig } from '@/lib/site'
+import { googleSiteVerification, siteConfig } from '@/lib/site'
 import './globals.css'
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   /**
    * No `template` on purpose. Every page title already names the tool and its
-   * job, and appending ` | CalculatorHub` pushed all of them past the ~60
+   * job, and appending ` | HomeCalc` pushed all of them past the ~60
    * characters Google renders, truncating the descriptive half. Google derives
    * the site name for the SERP from the WebSite schema on the home page.
    */
-  title: 'CalculatorHub — Simple calculators for everyday life',
+  title: 'HomeCalc — Simple calculators for everyday life',
   description: siteConfig.description,
-  generator: 'CalculatorHub',
+  applicationName: siteConfig.name,
+  generator: 'Next.js',
+  authors: [{ name: siteConfig.publisher, url: siteConfig.url }],
+  publisher: siteConfig.publisher,
   alternates: { canonical: '/' },
+  /** Search Console ownership, when the HTML-tag method is used. */
+  ...(googleSiteVerification ? { verification: { google: googleSiteVerification } } : {}),
   openGraph: {
-    title: 'CalculatorHub — Numbers made simple',
+    title: 'HomeCalc — Numbers made simple',
     description: 'Free, fast, and easy-to-use calculators for everyday life.',
     url: '/',
     siteName: siteConfig.name,
@@ -58,9 +64,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="bg-background">
+      <head>
+        {/* Opens the connection to the ad server before the tag asks for it. */}
+        <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossOrigin="" />
+      </head>
       <body className="flex min-h-screen flex-col font-sans antialiased">
         <div className="flex-1">{children}</div>
         <SiteFooter />
+        <AdSenseScript />
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>

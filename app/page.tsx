@@ -27,7 +27,7 @@ const heroPopular = popularCalculators.slice(0, 4)
 
 const homepageFaqs: readonly { question: string; answer: string }[] = [
   {
-    question: 'Are CalculatorHub calculators free?',
+    question: 'Are HomeCalc calculators free?',
     answer: 'Yes. Every calculator is free to use, with no sign-up required.',
   },
   {
@@ -38,13 +38,18 @@ const homepageFaqs: readonly { question: string; answer: string }[] = [
   {
     question: 'Can I suggest a calculator?',
     answer:
-      'Absolutely. We are always looking for useful tools to add to the collection.',
+      'Yes. Email contact@homecalc.net with what you were trying to work out and we will look at building it.',
+  },
+  {
+    question: 'Who runs HomeCalc, and how is it free?',
+    answer:
+      'HomeCalc is an independent site funded by advertising, not by lenders or brands. Ads are labelled and never influence what a calculator says.',
   },
 ]
 
 /**
  * `WebSite` is how Google resolves the name it prints above a search result.
- * That matters more since page titles stopped carrying a ` | CalculatorHub`
+ * That matters more since page titles stopped carrying a ` | HomeCalc`
  * suffix. The `FAQPage` entry mirrors the questions rendered further down --
  * the same visible-content rule the calculator pages follow.
  */
@@ -57,6 +62,23 @@ const structuredData = {
       name: siteConfig.name,
       url: absoluteUrl('/'),
       description: siteConfig.description,
+      publisher: { '@id': `${siteConfig.url}/#organization` },
+    },
+    {
+      // Names a reachable publisher behind the numbers, which is what both
+      // Google's quality signals and an ad network's reviewer look for.
+      '@type': 'Organization',
+      '@id': `${siteConfig.url}/#organization`,
+      name: siteConfig.name,
+      url: absoluteUrl('/'),
+      email: siteConfig.contactEmail,
+      contactPoint: [
+        {
+          '@type': 'ContactPoint',
+          contactType: 'customer support',
+          email: siteConfig.contactEmail,
+        },
+      ],
     },
     {
       '@type': 'FAQPage',
@@ -268,13 +290,19 @@ export default function Page() {
         <section id="about" className="mx-auto max-w-6xl px-5 py-20 lg:px-8">
           <div className="grid gap-12 lg:grid-cols-2">
             <div>
-              <p className="text-sm font-semibold text-accent">Why CalculatorHub?</p>
+              <p className="text-sm font-semibold text-accent">Why HomeCalc?</p>
               <h2 className="mt-2 text-3xl font-bold tracking-tight text-primary">
                 Useful by design.
               </h2>
               <p className="mt-5 max-w-lg leading-7 text-muted-foreground">
                 We believe everyday math should be accessible to everyone. Each tool is built to be
                 quick to understand, accurate to use, and helpful beyond a single answer.
+              </p>
+              <p className="mt-4 max-w-lg leading-7 text-muted-foreground">
+                <Link href="/about" className="font-medium text-accent underline underline-offset-4">
+                  More about who runs the site
+                </Link>{' '}
+                and how the formulas are checked.
               </p>
             </div>
             <div className="grid gap-4 sm:grid-cols-2">

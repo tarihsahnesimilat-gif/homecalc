@@ -182,7 +182,7 @@ function decodeEntities(text: string): string {
 /**
  * Google renders roughly 60 characters of a title and 160 of a description
  * before truncating. Overrunning does not hurt ranking, but it hides the part
- * of the copy that earns the click — and the ` | CalculatorHub` suffix used to
+ * of the copy that earns the click — and the ` | HomeCalc` suffix used to
  * push every title past the limit. This keeps that from creeping back as the
  * catalog grows.
  */

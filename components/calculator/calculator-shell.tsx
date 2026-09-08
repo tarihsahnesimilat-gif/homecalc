@@ -76,7 +76,7 @@ export function CalculatorShell({ calculator, content, children, aside }: Calcul
         <aside className="space-y-6 lg:sticky lg:top-6 lg:h-fit">
           {content.tip && (
             <div className="rounded-xl border border-border bg-muted p-6">
-              <p className="text-sm font-semibold text-accent">CalculatorHub tip</p>
+              <p className="text-sm font-semibold text-accent">HomeCalc tip</p>
               <h2 className="mt-2 text-xl font-bold text-primary">{content.tip.title}</h2>
               <p className="mt-3 text-sm leading-6 text-muted-foreground">{content.tip.body}</p>
               <Link

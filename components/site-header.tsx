@@ -5,12 +5,13 @@ import { useState } from 'react'
 import { Calculator, Menu, X } from 'lucide-react'
 
 import { CalculatorSearch } from '@/components/calculator-search'
+import { siteConfig } from '@/lib/site'
 
 const navigation = [
   { label: 'Calculators', href: '/calculators' },
   { label: 'Categories', href: '/#categories' },
-  { label: 'About', href: '/#about' },
-  { label: 'FAQ', href: '/#faq' },
+  { label: 'About', href: '/about' },
+  { label: 'Contact', href: '/contact' },
 ] as const
 
 export function SiteHeader() {
@@ -26,7 +27,7 @@ export function SiteHeader() {
           <span className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
             <Calculator className="size-4" />
           </span>
-          CalculatorHub
+          {siteConfig.name}
         </Link>
 
         <nav

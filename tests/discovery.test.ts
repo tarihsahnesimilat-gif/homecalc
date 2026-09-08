@@ -18,7 +18,7 @@ import {
   liveCalculators,
   searchCalculators,
 } from '../lib/calculators.ts'
-import { LEGAL_ROUTES, publicRoutes } from '../lib/routes.ts'
+import { INFO_ROUTES, LEGAL_ROUTES, publicRoutes } from '../lib/routes.ts'
 
 const EXPECTED_CATEGORY_PAGES = [
   'math',
@@ -324,13 +324,26 @@ test('links: every live calculator is reachable from its category page', () => {
 })
 
 // ----------------------------------------------------------------- Sitemap
-test('sitemap: exactly 61 public URLs', () => {
-  const routes = publicRoutes()
-  assert.equal(
-    routes.length,
-    61,
-    '1 homepage + 1 directory + 6 categories + 50 calculators + 3 legal pages',
-  )
+test('sitemap: every public page is listed exactly once', () => {
+  // Derived, not hard-coded: adding a calculator or a trust page should not
+  // fail this test, while a duplicate or an orphan still does.
+  const expected =
+    2 + // homepage + directory
+    categoriesWithLiveCalculators.length +
+    liveCalculators.length +
+    INFO_ROUTES.length +
+    LEGAL_ROUTES.length
+
+  const paths = publicRoutes().map((route) => route.path)
+  assert.equal(paths.length, expected)
+  assert.equal(new Set(paths).size, expected, 'a route is listed twice')
+})
+
+test('sitemap: the about and contact pages are listed', () => {
+  const paths = publicRoutes().map((route) => route.path)
+  for (const info of INFO_ROUTES) {
+    assert.ok(paths.includes(info), `missing ${info}`)
+  }
 })
 
 test('sitemap: the legal pages are listed and indexable', () => {
