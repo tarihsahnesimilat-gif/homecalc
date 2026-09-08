@@ -10,7 +10,7 @@ const TITLE = 'About'
 const DESCRIPTION = `Who runs ${siteConfig.name}, how the calculators are built and tested, and how the site is funded.`
 
 export const metadata: Metadata = {
-  title: `About ${siteConfig.name} — who we are and how the calculators are built`,
+  title: `About ${siteConfig.name} — who we are and how we work`,
   description: DESCRIPTION,
   alternates: { canonical: '/about' },
   openGraph: { title: TITLE, description: DESCRIPTION, url: '/about', type: 'website', images: OG_IMAGE },

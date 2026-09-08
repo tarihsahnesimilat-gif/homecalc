@@ -11,7 +11,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 
 import { liveCalculators, categoriesWithLiveCalculators } from '../lib/calculators.ts'
-import { LEGAL_ROUTES } from '../lib/routes.ts'
+import { INFO_ROUTES, LEGAL_ROUTES } from '../lib/routes.ts'
 
 const BUILD_DIR = path.join(process.cwd(), '.next', 'server', 'app')
 const hasBuild = fs.existsSync(path.join(BUILD_DIR, 'calculators.html'))
@@ -30,11 +30,14 @@ function jsonLdTypes(html: string): string[] {
 const calculatorPages = () => liveCalculators.map((c) => `calculators/${c.slug}.html`)
 const categoryPages = () => categoriesWithLiveCalculators.map((c) => `calculators/${c.id}.html`)
 const legalPages = () => LEGAL_ROUTES.map((route) => `${route.slice(1)}.html`)
+/** About and contact: the trust pages an ad network's reviewer looks for. */
+const infoPages = () => INFO_ROUTES.map((route) => `${route.slice(1)}.html`)
 const allPages = () => [
   'index.html',
   'calculators.html',
   ...categoryPages(),
   ...calculatorPages(),
+  ...infoPages(),
   ...legalPages(),
 ]
 

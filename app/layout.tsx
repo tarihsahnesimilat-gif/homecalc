@@ -18,7 +18,6 @@ export const metadata: Metadata = {
   description: siteConfig.description,
   applicationName: siteConfig.name,
   generator: 'Next.js',
-  authors: [{ name: siteConfig.publisher, url: siteConfig.url }],
   publisher: siteConfig.publisher,
   alternates: { canonical: '/' },
   /** Search Console ownership, when the HTML-tag method is used. */
