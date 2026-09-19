@@ -19,6 +19,7 @@ import {
   searchCalculators,
 } from '../lib/calculators.ts'
 import { categoryContent, getCategoryContent } from '../lib/category-content.ts'
+import { directoryContent } from '../lib/directory-content.ts'
 import { INFO_ROUTES, LEGAL_ROUTES, publicRoutes } from '../lib/routes.ts'
 
 const EXPECTED_CATEGORY_PAGES = [
@@ -293,6 +294,83 @@ test('content: the YMYL categories carry a disclaimer', () => {
       /not .*(advice|a substitute)/i.test(content.disclaimer!),
       `${id}: the disclaimer does not say what it is not`,
     )
+  }
+})
+
+// ------------------------------------------------- Directory page content
+/**
+ * The directory carries the orientation a first-time visitor needs: which
+ * group answers which kind of question, how to work through a calculator, and
+ * what a result is worth. It must cover every category page and stay clear of
+ * the category pages' own copy.
+ */
+const directoryProse = [
+  ...directoryContent.intro.paragraphs,
+  ...directoryContent.results.paragraphs,
+  ...directoryContent.howTo.steps.map((step) => step.description),
+  ...directoryContent.chooser.groups.map((group) => group.text),
+]
+
+test('directory: the chooser covers every category page, in page order', () => {
+  assert.deepEqual(
+    directoryContent.chooser.groups.map((group) => group.id),
+    categoriesWithLiveCalculators.map((category) => category.id),
+  )
+})
+
+test('directory: every representative calculator is live and listed once', () => {
+  const examples = directoryContent.chooser.groups.flatMap((group) => group.examples)
+
+  assert.ok(examples.length >= 6, 'too few representative calculators to be useful')
+  assert.equal(new Set(examples).size, examples.length, 'the same calculator is used twice')
+
+  for (const slug of examples) {
+    const calculator = liveCalculators.find((c: CalculatorDefinition) => c.slug === slug)
+    assert.ok(calculator, `"${slug}" is not a live calculator`)
+  }
+})
+
+test('directory: representative calculators are spread across categories', () => {
+  // A list of examples that all came from one category would not help anyone
+  // choose between the groups.
+  for (const group of directoryContent.chooser.groups) {
+    for (const slug of group.examples) {
+      const calculator = liveCalculators.find((c: CalculatorDefinition) => c.slug === slug)!
+      assert.equal(
+        calculator.category,
+        group.id,
+        `${slug} is offered as an example of ${group.id} but belongs to ${calculator.category}`,
+      )
+    }
+  }
+})
+
+test('directory: the editorial content is substantial and walks through the workflow', () => {
+  const words = directoryProse.join(' ').split(/\s+/).filter(Boolean).length
+  assert.ok(words >= 400, `the directory carries only ${words} words of editorial content`)
+
+  const introWords = directoryContent.intro.paragraphs.join(' ').split(/\s+/).filter(Boolean).length
+  assert.ok(introWords >= 200, `the intro is ${introWords} words, under 200`)
+
+  assert.ok(directoryContent.howTo.steps.length >= 5, 'the workflow should have at least 5 steps')
+  for (const step of directoryContent.howTo.steps) {
+    assert.ok(step.title.length > 0 && step.description.length > 0, 'a workflow step is empty')
+  }
+})
+
+test('directory: no copy is shared with a category page', () => {
+  const categoryCopy = new Set(
+    categoryContent.flatMap((content) => [
+      ...content.overview.paragraphs,
+      ...content.interpreting.paragraphs,
+      ...content.chooser.items.map((item) => item.text),
+      ...content.mistakes.items.map((mistake) => mistake.description),
+      ...content.faqs.map((faq) => faq.answer),
+    ]),
+  )
+
+  for (const paragraph of directoryProse) {
+    assert.ok(!categoryCopy.has(paragraph), `the directory repeats category copy: ${paragraph}`)
   }
 })
 

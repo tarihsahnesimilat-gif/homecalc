@@ -13,6 +13,7 @@ import path from 'node:path'
 import { liveCalculators, categoriesWithLiveCalculators } from '../lib/calculators.ts'
 import { calculatorContent } from '../lib/calculator-content/index.ts'
 import { getCategoryContent } from '../lib/category-content.ts'
+import { directoryContent } from '../lib/directory-content.ts'
 import { INFO_ROUTES, LEGAL_ROUTES } from '../lib/routes.ts'
 
 const BUILD_DIR = path.join(process.cwd(), '.next', 'server', 'app')
@@ -138,6 +139,41 @@ test('rendered: the directory links to every live calculator and category', { sk
       `directory is missing the ${category.id} category`,
     )
   }
+})
+
+test('rendered: the directory carries its editorial sections', { skip: !hasBuild }, () => {
+  const html = read('calculators.html')
+
+  for (const id of [
+    'directory-intro-heading',
+    'directory-chooser-heading',
+    'directory-howto-heading',
+    'directory-results-heading',
+  ]) {
+    assert.ok(html.includes(`id="${id}"`), `the directory is missing #${id}`)
+  }
+
+  // Server-rendered prose, not text that only appears once React has run.
+  for (const paragraph of directoryContent.intro.paragraphs) {
+    assert.ok(html.includes(paragraph), `the directory does not render: ${paragraph.slice(0, 40)}…`)
+  }
+
+  for (const group of directoryContent.chooser.groups) {
+    assert.ok(
+      html.includes(`href="/calculators/${group.id}"`),
+      `the chooser does not link to /calculators/${group.id}`,
+    )
+    for (const slug of group.examples) {
+      assert.ok(
+        html.includes(`href="/calculators/${slug}"`),
+        `the chooser does not link to ${slug}`,
+      )
+    }
+  }
+
+  assert.equal(count(html, /<h1/g), 1, 'the directory should keep exactly one h1')
+  assert.ok(html.includes('<h2'), 'the editorial sections should use h2 headings')
+  assert.ok(html.includes('<h3'), 'the chooser and workflow should use h3 subheadings')
 })
 
 test('rendered: each category page links to its own calculators only', { skip: !hasBuild }, () => {

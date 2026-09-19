@@ -8,9 +8,12 @@ import { SiteHeader } from '@/components/site-header'
 import {
   CALCULATORS_DIRECTORY_PATH,
   categoryHref,
+  getCalculatorBySlug,
+  getCategoryName,
   groupLiveCalculatorsByCategory,
   liveCalculators,
 } from '@/lib/calculators'
+import { directoryContent } from '@/lib/directory-content'
 import { OG_IMAGE, absoluteUrl } from '@/lib/site'
 
 const TITLE = 'All Calculators — The Full HomeCalc Directory'
@@ -32,6 +35,18 @@ export const metadata: Metadata = {
 
 export default function CalculatorsDirectoryPage() {
   const groups = groupLiveCalculatorsByCategory()
+  const { intro, chooser, howTo, results } = directoryContent
+
+  /** Example links resolve through the registry, so none can go stale. */
+  const chooserGroups = chooser.groups.map((group) => ({
+    ...group,
+    name: getCategoryName(group.id),
+    href: categoryHref(group.id),
+    calculators: group.examples.flatMap((slug) => {
+      const calculator = getCalculatorBySlug(slug)
+      return calculator && calculator.status === 'live' ? [calculator] : []
+    }),
+  }))
 
   // A CollectionPage listing the categories it links to. No ratings, prices or
   // authorship are claimed — only what the page genuinely contains.
@@ -86,6 +101,19 @@ export default function CalculatorsDirectoryPage() {
           ))}
         </nav>
 
+        <section aria-labelledby="directory-intro-heading" className="mt-12">
+          <h2 id="directory-intro-heading" className="text-2xl font-bold text-primary">
+            {intro.title}
+          </h2>
+          <div className="mt-4 space-y-4">
+            {intro.paragraphs.map((paragraph) => (
+              <p key={paragraph} className="max-w-3xl leading-7 text-muted-foreground">
+                {paragraph}
+              </p>
+            ))}
+          </div>
+        </section>
+
         {groups.map(({ category, calculators }) => (
           <section key={category.id} id={category.id} className="mt-12">
             <div className="flex flex-wrap items-end justify-between gap-3">
@@ -109,6 +137,78 @@ export default function CalculatorsDirectoryPage() {
             </div>
           </section>
         ))}
+
+        <section
+          aria-labelledby="directory-chooser-heading"
+          className="mt-16 border-t border-border pt-10"
+        >
+          <h2 id="directory-chooser-heading" className="text-2xl font-bold text-primary">
+            {chooser.title}
+          </h2>
+          <ul className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {chooserGroups.map((group) => (
+              <li key={group.id} className="rounded-lg border border-border bg-card p-5">
+                <h3 className="font-semibold text-primary">
+                  <Link href={group.href} className="hover:text-accent hover:underline">
+                    {group.name}
+                  </Link>
+                </h3>
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">{group.text}</p>
+                {group.calculators.length > 0 && (
+                  <p className="mt-3 text-sm text-muted-foreground">
+                    Start with{' '}
+                    {group.calculators.map((calculator, index) => (
+                      <span key={calculator.slug}>
+                        {index > 0 && ' or '}
+                        <Link
+                          href={calculator.href}
+                          className="font-medium text-primary hover:text-accent hover:underline"
+                        >
+                          {calculator.name}
+                        </Link>
+                      </span>
+                    ))}
+                    .
+                  </p>
+                )}
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <section aria-labelledby="directory-howto-heading" className="mt-12">
+          <h2 id="directory-howto-heading" className="text-2xl font-bold text-primary">
+            {howTo.title}
+          </h2>
+          <ol className="mt-5 space-y-4">
+            {howTo.steps.map((step, index) => (
+              <li key={step.title} className="flex gap-4">
+                <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-secondary text-sm font-bold text-secondary-foreground">
+                  {index + 1}
+                </span>
+                <div>
+                  <h3 className="font-semibold text-primary">{step.title}</h3>
+                  <p className="mt-1 max-w-3xl leading-7 text-muted-foreground">
+                    {step.description}
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </section>
+
+        <section aria-labelledby="directory-results-heading" className="mt-12">
+          <h2 id="directory-results-heading" className="text-2xl font-bold text-primary">
+            {results.title}
+          </h2>
+          <div className="mt-4 space-y-4">
+            {results.paragraphs.map((paragraph) => (
+              <p key={paragraph} className="max-w-3xl leading-7 text-muted-foreground">
+                {paragraph}
+              </p>
+            ))}
+          </div>
+        </section>
 
         <script
           type="application/ld+json"
