@@ -6,7 +6,7 @@ import { notFound } from 'next/navigation'
 import { Breadcrumbs } from '@/components/calculator/breadcrumbs'
 import { CalculatorCard } from '@/components/calculator/calculator-card'
 import { CalculatorFaq } from '@/components/calculator/calculator-faq'
-import { CategoryEditorial } from '@/components/calculator/category-editorial'
+import { CategoryEditorial, CategoryIntro } from '@/components/calculator/category-editorial'
 import { SiteHeader } from '@/components/site-header'
 import {
   CALCULATORS_DIRECTORY_PATH,
@@ -114,6 +114,8 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
         <p className="mt-4 max-w-2xl text-lg leading-8 text-muted-foreground">
           {category.seoDescription}
         </p>
+
+        {content && <CategoryIntro content={content} />}
 
         <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {calculators.map((calculator) => (

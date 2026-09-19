@@ -22,6 +22,18 @@ const hasBuild = fs.existsSync(path.join(BUILD_DIR, 'calculators.html'))
 const read = (relative: string) => fs.readFileSync(path.join(BUILD_DIR, relative), 'utf8')
 const count = (haystack: string, needle: RegExp) => (haystack.match(needle) ?? []).length
 
+/**
+ * The rendered markup, without the RSC flight payload.
+ *
+ * That payload carries an escaped copy of every element React hydrates from,
+ * so searching the raw file finds each paragraph twice and makes a real
+ * duplicate indistinguishable from a rendering artefact.
+ */
+function renderedMarkup(html: string): string {
+  const payload = html.indexOf('self.__next_f')
+  return payload === -1 ? html : html.slice(0, payload)
+}
+
 /** Only the real JSON-LD blocks; the RSC payload embeds an escaped copy too. */
 function jsonLdTypes(html: string): string[] {
   const matches = html.matchAll(
@@ -187,6 +199,46 @@ test('rendered: each category page links to its own calculators only', { skip: !
       }
     }
     assert.ok(html.includes('href="/calculators"'), `${category.id} page does not link back`)
+  }
+})
+
+test('rendered: the category lead sits above the grid, and only there', { skip: !hasBuild }, () => {
+  for (const category of categoriesWithLiveCalculators) {
+    // Decoded, because React escapes quotes and apostrophes in text and the
+    // copy being searched for contains both.
+    const html = decodeEntities(renderedMarkup(read(`calculators/${category.id}.html`)))
+    const content = getCategoryContent(category.id)!
+    const [lead, ...rest] = content.overview.paragraphs
+
+    const at = html.indexOf(lead)
+    assert.ok(at !== -1, `${category.id}: the lead paragraph is not rendered`)
+
+    // Between the heading and the first calculator card, so the page opens
+    // with prose rather than with a grid someone has to scroll past.
+    const firstCard = Math.min(
+      ...liveCalculators
+        .filter((calculator) => calculator.category === category.id)
+        .map((calculator) => html.indexOf(`href="${calculator.href}"`))
+        .filter((index) => index !== -1),
+    )
+
+    assert.ok(at > html.indexOf('<h1'), `${category.id}: the lead should follow the heading`)
+    assert.ok(at < firstCard, `${category.id}: the lead should come before the calculator cards`)
+
+    // Lifted, not copied: the overview below must no longer repeat it.
+    const overview = html.indexOf('id="category-overview-heading"')
+    assert.ok(overview !== -1, `${category.id}: the overview section is missing`)
+    assert.ok(
+      html.indexOf(lead, overview) === -1,
+      `${category.id}: the lead paragraph appears both above and below the grid`,
+    )
+
+    for (const paragraph of rest) {
+      assert.ok(
+        html.indexOf(paragraph) > overview,
+        `${category.id}: the rest of the overview should stay below the grid`,
+      )
+    }
   }
 })
 

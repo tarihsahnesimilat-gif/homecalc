@@ -8,6 +8,22 @@ interface CategoryEditorialProps {
 }
 
 /**
+ * The opening paragraph of a category's overview, lifted above the calculator
+ * grid.
+ *
+ * Someone arriving on a category with fourteen cards had to scroll past all of
+ * them before meeting a sentence of prose, so the page read as a bare list to
+ * a visitor and to anyone reviewing it. This is the same paragraph the overview
+ * below used to start with -- taken from it, not copied, so it appears once.
+ */
+export function CategoryIntro({ content }: CategoryEditorialProps) {
+  const [lead] = content.overview.paragraphs
+  if (!lead) return null
+
+  return <p className="mt-4 max-w-3xl leading-7 text-muted-foreground">{lead}</p>
+}
+
+/**
  * The written half of a category page: what the tools are for, which one
  * answers which question, how to read a result, and what people get wrong.
  *
@@ -15,9 +31,15 @@ interface CategoryEditorialProps {
  * by gaining an entry there rather than by growing new markup. Chooser links
  * resolve through the registry, which means a slug that is missing or planned
  * is skipped rather than rendered as a dead link.
+ *
+ * The overview picks up from its second paragraph, because `CategoryIntro`
+ * renders the first one above the grid.
  */
 export function CategoryEditorial({ content }: CategoryEditorialProps) {
   const { overview, chooser, interpreting, mistakes, disclaimer } = content
+
+  /** Everything except the lead, which `CategoryIntro` has already shown. */
+  const remainingOverview = overview.paragraphs.slice(1)
 
   const guides = chooser.items.flatMap((item) => {
     const calculator = getCalculatorBySlug(item.slug)
@@ -27,18 +49,20 @@ export function CategoryEditorial({ content }: CategoryEditorialProps) {
 
   return (
     <article className="mt-12 max-w-none border-t border-border pt-10">
-      <section aria-labelledby="category-overview-heading">
-        <h2 id="category-overview-heading" className="text-2xl font-bold text-primary">
-          {overview.title}
-        </h2>
-        <div className="mt-4 space-y-4">
-          {overview.paragraphs.map((paragraph) => (
-            <p key={paragraph} className="max-w-3xl leading-7 text-muted-foreground">
-              {paragraph}
-            </p>
-          ))}
-        </div>
-      </section>
+      {remainingOverview.length > 0 && (
+        <section aria-labelledby="category-overview-heading">
+          <h2 id="category-overview-heading" className="text-2xl font-bold text-primary">
+            {overview.title}
+          </h2>
+          <div className="mt-4 space-y-4">
+            {remainingOverview.map((paragraph) => (
+              <p key={paragraph} className="max-w-3xl leading-7 text-muted-foreground">
+                {paragraph}
+              </p>
+            ))}
+          </div>
+        </section>
+      )}
 
       {guides.length > 0 && (
         <section aria-labelledby="category-chooser-heading" className="mt-10">
