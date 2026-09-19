@@ -111,6 +111,8 @@ export const bmiContent: CalculatorContent = {
         'Yes. Imperial input is converted using the exact definitions — a pound is 0.45359237 kg and an inch is 2.54 cm — and then run through the same formula, so any difference is only rounding in what you entered.',
     },
   ],
+  disclaimer:
+    'BMI is a screening measure, not a diagnosis. It cannot tell muscle from fat, and the standard adult categories do not apply to children or during pregnancy. Treat it as one rough indicator among many, and speak to a healthcare professional about anything that concerns you.',
   tip: {
     title: 'One number, limited context',
     body: 'BMI is a rough screening measure. It cannot see body composition, fitness, or where weight is carried, so it is most useful alongside other information rather than on its own.',

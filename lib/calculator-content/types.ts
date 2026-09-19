@@ -58,6 +58,12 @@ export interface CalculatorContent {
   formulasTitle?: string
   examples: CalculatorExample[]
   faqs: CalculatorFaq[]
+  /**
+   * Shown directly under the results, on calculators where a number could be
+   * read as advice — health estimates, and anything involving borrowing,
+   * saving or investing. One short paragraph; omitted everywhere else.
+   */
+  disclaimer?: string
   /** Optional sidebar note. */
   tip?: {
     title: string

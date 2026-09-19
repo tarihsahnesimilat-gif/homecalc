@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
-import type { ReactNode } from 'react'
+import { Children, type ReactNode } from 'react'
 
 import type { CalculatorContent } from '@/lib/calculator-content/types'
 import {
@@ -11,11 +11,16 @@ import {
 } from '@/lib/calculators'
 import { absoluteUrl } from '@/lib/site'
 import { Breadcrumbs } from './breadcrumbs'
+import { CalculatorDisclaimer } from './calculator-disclaimer'
 
 interface CalculatorShellProps {
   calculator: CalculatorDefinition
   content: CalculatorContent
-  /** The interactive calculator plus its supporting article content. */
+  /**
+   * The interactive calculator first, then its supporting article content.
+   * That order is what lets the disclaimer land directly under the results
+   * rather than at the bottom of the page.
+   */
   children: ReactNode
   /** Optional extra sidebar content rendered below the tip card. */
   aside?: ReactNode
@@ -26,6 +31,14 @@ interface CalculatorShellProps {
  * and the two-column layout with the sidebar.
  */
 export function CalculatorShell({ calculator, content, children, aside }: CalculatorShellProps) {
+  /**
+   * Every calculator page passes its form as the first child, so splitting
+   * here puts the disclaimer immediately below the results without each page
+   * having to place it — and without the 50 pages that need no disclaimer
+   * changing at all.
+   */
+  const [interactive, ...supporting] = Children.toArray(children)
+
   /**
    * Each calculator genuinely is a free browser tool, so WebApplication
    * describes it accurately. Every field below is derived from the registry or
@@ -70,7 +83,9 @@ export function CalculatorShell({ calculator, content, children, aside }: Calcul
           <p className="mt-4 max-w-2xl text-lg leading-8 text-muted-foreground">
             {content.intro.lead}
           </p>
-          {children}
+          {interactive}
+          {content.disclaimer && <CalculatorDisclaimer body={content.disclaimer} />}
+          {supporting}
         </div>
 
         <aside className="space-y-6 lg:sticky lg:top-6 lg:h-fit">

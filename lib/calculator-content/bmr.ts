@@ -113,6 +113,8 @@ export const bmrContent: CalculatorContent = {
         'Not on its own. This is an informational estimate, not nutritional or medical guidance. Speak to a qualified professional about anything that affects your health or diet.',
     },
   ],
+  disclaimer:
+    'This is an estimate from a population formula, not a measurement. Body composition, genetics, hormones, medication and health conditions all shift real metabolism, and none of them appear in the equation. For decisions about how you eat or train, speak to a qualified professional.',
   tip: {
     title: 'An estimate, not a measurement',
     body: 'The equation describes a typical person with your measurements. Body composition, genetics and health all shift real metabolism away from the average.',

@@ -98,6 +98,122 @@ test('registry: every live calculator has content', () => {
   }
 })
 
+/**
+ * Calculators whose results could be read as health or financial advice carry
+ * a note under the result saying what the number is and what it is not. The
+ * list is explicit on both sides: a calculator that needs one must have it,
+ * and one that does not must stay clean, so the notes keep their weight.
+ */
+const YMYL_DISCLAIMERS = [
+  'bmi-calculator',
+  'bmr-calculator',
+  'calorie-calculator',
+  'calorie-deficit-calculator',
+  'pace-calculator',
+  'mortgage-calculator',
+  'loan-payment-calculator',
+  'loan-interest-calculator',
+  'debt-payoff-calculator',
+  'investment-calculator',
+  'savings-calculator',
+]
+
+test('disclaimers: every YMYL calculator carries one, and nothing else does', () => {
+  for (const slug of YMYL_DISCLAIMERS) {
+    assert.ok(calculatorContent[slug], `${slug} has no content file`)
+    assert.ok(calculatorContent[slug].disclaimer, `${slug} has no disclaimer`)
+  }
+
+  for (const calculator of liveCalculators) {
+    if (YMYL_DISCLAIMERS.includes(calculator.slug)) continue
+    assert.equal(
+      calculatorContent[calculator.slug].disclaimer,
+      undefined,
+      `${calculator.slug} carries a disclaimer it was not meant to`,
+    )
+  }
+})
+
+test('disclaimers: each one is short, specific and unrepeated', () => {
+  const seen = new Set<string>()
+
+  for (const slug of YMYL_DISCLAIMERS) {
+    const disclaimer = calculatorContent[slug].disclaimer!
+    const words = disclaimer.split(/\s+/).filter(Boolean).length
+
+    assert.ok(words >= 25 && words <= 70, `${slug}: disclaimer is ${words} words`)
+    assert.ok(disclaimer.trim().endsWith('.'), `${slug}: disclaimer does not end in a full stop`)
+    assert.ok(!seen.has(disclaimer), `${slug} repeats another calculator's disclaimer`)
+    seen.add(disclaimer)
+  }
+})
+
+test('disclaimers: none claims authority or promises an outcome', () => {
+  // The point of the note is to withdraw a claim, so wording that asserts one
+  // would defeat it.
+  const forbidden = [
+    /guarantees?(?!\s+nothing)/i,
+    /guaranteed(?!\.)/i,
+    /medically (approved|certified)/i,
+    /(doctors|experts|physicians) (recommend|agree)/i,
+    /clinically proven/i,
+    /accurate/i,
+  ]
+
+  for (const slug of YMYL_DISCLAIMERS) {
+    const disclaimer = calculatorContent[slug].disclaimer!
+    for (const pattern of forbidden) {
+      assert.ok(!pattern.test(disclaimer), `${slug}: disclaimer matches ${pattern}`)
+    }
+  }
+})
+
+test('disclaimers: health notes name their limits, finance notes name the variables', () => {
+  const health = ['bmi-calculator', 'bmr-calculator', 'calorie-calculator', 'calorie-deficit-calculator']
+  const finance = [
+    'mortgage-calculator',
+    'loan-payment-calculator',
+    'loan-interest-calculator',
+    'debt-payoff-calculator',
+    'investment-calculator',
+    'savings-calculator',
+  ]
+
+  for (const slug of [...health, 'pace-calculator']) {
+    assert.match(
+      calculatorContent[slug].disclaimer!,
+      /professional|healthcare|medical advice/i,
+      `${slug}: the note should point somewhere better than itself`,
+    )
+  }
+
+  for (const slug of health) {
+    assert.match(
+      calculatorContent[slug].disclaimer!,
+      /estimate|screening|not a (diagnosis|nutrition plan|recommendation)/i,
+      `${slug}: the note should say the figure is an estimate with limits`,
+    )
+  }
+
+  for (const slug of finance) {
+    assert.match(
+      calculatorContent[slug].disclaimer!,
+      /estimate|projection/i,
+      `${slug}: the note should say the figure is an estimate`,
+    )
+    assert.match(
+      calculatorContent[slug].disclaimer!,
+      /fees|rates?|taxes|terms|returns/i,
+      `${slug}: the note should say what can differ in practice`,
+    )
+    assert.match(
+      calculatorContent[slug].disclaimer!,
+      /not (financial|investment) advice|not financial advice|rather than (financial|investment) advice/i,
+      `${slug}: the note should say it is not advice`,
+    )
+  }
+})
+
 test('registry: category counts are derived, not hardcoded', () => {
   const counts: Record<string, number> = Object.fromEntries(
     categoriesWithCounts.map((category) => [category.id, category.liveCount]),

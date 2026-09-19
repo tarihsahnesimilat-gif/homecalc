@@ -125,6 +125,8 @@ export const mortgageContent: CalculatorContent = {
         'No. It is a maths tool for comparing scenarios. What you can afford depends on your income, other commitments and circumstances — speak to a qualified mortgage adviser about those.',
     },
   ],
+  disclaimer:
+    'This is an estimate based only on the figures you enter. A real offer depends on the rate, fees, insurance, property taxes and the assessment a lender makes of your circumstances, so your actual payment will differ. It is not financial advice or an offer of credit.',
   tip: {
     title: 'Budget above the calculator',
     body: 'Whatever this shows, plan for more. Tax, insurance, maintenance and service charges are real monthly costs that the loan payment alone never captures.',

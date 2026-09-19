@@ -125,6 +125,8 @@ export const debtPayoffContent: CalculatorContent = {
         'No. It is arithmetic on the figures you enter. For help with debt you are struggling with, speak to a qualified adviser or a non-profit debt charity.',
     },
   ],
+  disclaimer:
+    'A projection based on a fixed payment and a fixed rate. Real balances move with new spending, variable rates, fees and minimum-payment rules, so treat the payoff date as an estimate rather than a schedule. Not financial advice — check the terms with your lender.',
   tip: {
     title: 'Pay the highest rate first',
     body: 'With several debts, putting every spare pound against the highest-rate balance costs the least overall. Run each one here to see which is costing you most.',

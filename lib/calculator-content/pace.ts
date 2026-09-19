@@ -118,6 +118,8 @@ export const paceContent: CalculatorContent = {
         'No. It divides the time you ran by the distance you covered. Terrain, wind, heat and altitude all affect the effort behind a given pace but not the arithmetic.',
     },
   ],
+  disclaimer:
+    'Pace and speed here are exact arithmetic on the distance and time you enter. What pace is right for you depends on fitness, terrain, conditions and health, so treat any target as a guide rather than a training plan, and get medical advice before starting hard training.',
   tip: {
     title: 'Lower pace, higher speed',
     body: 'Getting faster means your pace number goes down and your speed number goes up. Mixing the two up is the quickest way to misread your own training log.',

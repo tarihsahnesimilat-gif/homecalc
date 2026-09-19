@@ -131,6 +131,8 @@ export const investmentContent: CalculatorContent = {
         'No. It is a maths tool. Decisions about investing depend on your circumstances, timescale and tolerance for loss — speak to a qualified adviser about those.',
     },
   ],
+  disclaimer:
+    'A projection of the assumptions you enter, not a forecast. Real returns vary year to year and can be negative, and fees, taxes and inflation all affect what a balance is worth. Educational information rather than investment advice, and no return shown here is guaranteed.',
   tip: {
     title: 'Watch the split, not just the total',
     body: 'The breakdown shows how much came from your contributions versus growth. Early on, contributions dominate; over long periods, growth takes over. That crossover is what compounding really means.',

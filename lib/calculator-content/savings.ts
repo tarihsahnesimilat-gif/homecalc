@@ -124,6 +124,8 @@ export const savingsContent: CalculatorContent = {
         'Because it is earned on a small balance. In year one your deposits dwarf it. The crossover, where interest starts adding more than you do, usually takes many years — which is the argument for starting early.',
     },
   ],
+  disclaimer:
+    'An estimate based on a constant rate and regular deposits. Real savings rates change, and fees, taxes and inflation affect what a balance will actually buy. Educational information rather than financial advice — check current terms with your provider.',
   tip: {
     title: 'Watch the split, not just the total',
     body: 'The breakdown shows how much you paid in against how much the interest added. Watching that ratio shift over longer periods is the clearest illustration of compounding.',

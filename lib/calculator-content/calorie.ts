@@ -114,6 +114,8 @@ export const calorieContent: CalculatorContent = {
         'No. The multiplier describes an average week rather than individual sessions. A single hard workout is already included if it is part of your typical pattern.',
     },
   ],
+  disclaimer:
+    'Daily energy needs are estimated from your inputs and an activity multiplier, so the result can sit a few hundred calories either side of what your body actually uses. It is educational information rather than a nutrition plan, and anyone changing what they eat for health reasons should speak to a qualified professional.',
   tip: {
     title: 'A band, not a number',
     body: 'Two estimates that differ by a few hundred calories describe roughly the same person. Use the figure as a starting range rather than a precise target.',

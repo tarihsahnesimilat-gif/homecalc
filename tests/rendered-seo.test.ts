@@ -11,6 +11,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 
 import { liveCalculators, categoriesWithLiveCalculators } from '../lib/calculators.ts'
+import { calculatorContent } from '../lib/calculator-content/index.ts'
 import { getCategoryContent } from '../lib/category-content.ts'
 import { INFO_ROUTES, LEGAL_ROUTES } from '../lib/routes.ts'
 
@@ -179,6 +180,26 @@ test('rendered: every category page carries its editorial sections', { skip: !ha
       count(html, /<details/g),
       content.faqs.length,
       `${category.id} page should render one details block per FAQ`,
+    )
+  }
+})
+
+test('rendered: the YMYL note sits under the result, not at the foot of the page', { skip: !hasBuild }, () => {
+  for (const calculator of liveCalculators) {
+    const disclaimer = calculatorContent[calculator.slug].disclaimer
+    const html = read(`calculators/${calculator.slug}.html`)
+    const panel = html.indexOf('About these results')
+
+    if (!disclaimer) {
+      assert.equal(panel, -1, `${calculator.slug} renders a disclaimer panel without content`)
+      continue
+    }
+
+    assert.ok(panel !== -1, `${calculator.slug} does not render its disclaimer`)
+    assert.ok(html.includes(disclaimer), `${calculator.slug}: the disclaimer text is missing`)
+    assert.ok(
+      panel < html.indexOf('id="about-heading"'),
+      `${calculator.slug}: the disclaimer should come before the article, under the result`,
     )
   }
 })

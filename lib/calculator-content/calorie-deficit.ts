@@ -119,6 +119,8 @@ export const calorieDeficitContent: CalculatorContent = {
         'No. It is arithmetic on the figures you enter, provided for information. Decisions about diet and health should involve a qualified professional who knows your circumstances.',
     },
   ],
+  disclaimer:
+    'This shows the arithmetic of the deficit you enter, not a recommendation for how large one should be. Real weight change is rarely linear, and what suits you depends on your health, activity and circumstances. Speak to a qualified professional before making significant changes.',
   tip: {
     title: 'The maintenance figure drives everything',
     body: 'Every number here depends on a maintenance estimate that could easily be a few hundred calories out. Treat the projection as a direction rather than a schedule.',

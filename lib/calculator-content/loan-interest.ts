@@ -119,6 +119,8 @@ export const loanInterestContent: CalculatorContent = {
         'No. Arrangement fees, early repayment charges and insurance sit outside the interest calculation. An APR quoted by a lender usually folds some of those in, which is why it can exceed the headline rate.',
     },
   ],
+  disclaimer:
+    'This shows the interest the figures you entered would produce, which is an estimate rather than a quote. What a loan actually costs also depends on fees, charges and how a lender applies interest, which is why a quoted APR can exceed the headline rate. Educational information, not financial advice.',
   tip: {
     title: 'Shortening the term beats chasing the rate',
     body: 'Cutting years off a loan usually saves more interest than a small rate reduction, because interest accrues for fewer months on a faster-falling balance.',

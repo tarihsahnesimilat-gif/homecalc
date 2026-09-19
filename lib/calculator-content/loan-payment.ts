@@ -115,6 +115,8 @@ export const loanPaymentContent: CalculatorContent = {
         'Not here — this gives the payment and the totals rather than a full amortisation schedule. As a rule, early payments are mostly interest and later ones mostly principal.',
     },
   ],
+  disclaimer:
+    'An estimate from the amount, rate and term you enter. Real agreements add arrangement fees and insurance, and lenders apply their own rounding and day-count rules, so the payment on an offer document may differ. It is not financial advice or an offer of credit.',
   tip: {
     title: 'Compare total interest, not just the monthly figure',
     body: 'A lower monthly payment usually means a longer term and more interest overall. The total repaid is the number that tells you what the loan actually costs.',
