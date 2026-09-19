@@ -62,6 +62,35 @@ export const adsenseClientId = hasAdsenseId ? `ca-${rawAdsenseId}` : ''
 /** `pub-…` — the form the ads.txt seller line expects. */
 export const adsensePublisherId = hasAdsenseId ? rawAdsenseId : ''
 
+/**
+ * The publisher id this site is registered under.
+ *
+ * Not a fallback — leaving `NEXT_PUBLIC_ADSENSE_ID` unset must still mean no
+ * ads, so previews and local development never load a real tag. It is what the
+ * variable is expected to resolve to in production, and a mismatch is almost
+ * always a pasted id from another property, which is the failure the guard
+ * above exists to catch.
+ */
+export const EXPECTED_ADSENSE_CLIENT_ID = 'ca-pub-7484981971574475'
+
+/**
+ * The one manually placed unit, from the AdSense dashboard.
+ *
+ * Auto ads handle everything else. This slot exists so the page has a break
+ * after the editorial content rather than leaving placement entirely to Google.
+ */
+export const ADSENSE_DISPLAY_SLOT = '4176066573'
+
+if (
+  process.env.NODE_ENV === 'production' &&
+  adsenseClientId &&
+  adsenseClientId !== EXPECTED_ADSENSE_CLIENT_ID
+) {
+  console.warn(
+    `[site] NEXT_PUBLIC_ADSENSE_ID is ${adsenseClientId}, not ${EXPECTED_ADSENSE_CLIENT_ID} — check it belongs to this site.`,
+  )
+}
+
 /** Google Search Console HTML-tag verification token, if that method is used. */
 export const googleSiteVerification = process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION?.trim() ?? ''
 
