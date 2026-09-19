@@ -36,6 +36,17 @@ export const loanInterestContent: CalculatorContent = {
       },
     ],
   },
+  comparisons: [
+    {
+      slug: 'loan-payment-calculator',
+      summary:
+        'Both start from an amount, a rate and a term. What differs is which figure is put in front: the cost of borrowing, or the instalment that pays it off.',
+      useThisWhen:
+        'you are deciding whether a loan is worth what it costs, or weighing a shorter term against a lower rate.',
+      useOtherWhen:
+        'the question is affordability rather than cost — what the monthly commitment would actually be.',
+    },
+  ],
   formulasTitle: 'How the interest is worked out',
   formulas: [
     {

@@ -35,6 +35,25 @@ export interface CalculatorHowToStep {
   description: string
 }
 
+/**
+ * A pointer to the calculator this one is most often mistaken for.
+ *
+ * Two pages that answer neighbouring questions look like duplicates to a
+ * visitor who has landed on the wrong one, and to a search engine deciding
+ * which to rank. Each side states the axis of difference in its own words and
+ * links across, so the pair reads as two tools rather than two versions of one.
+ */
+export interface CalculatorComparison {
+  /** Must match a live `slug` in the registry. */
+  slug: string
+  /** One sentence on what actually separates the two. */
+  summary: string
+  /** Completes "Use this calculator when …". */
+  useThisWhen: string
+  /** Completes "Use the <other> when …". */
+  useOtherWhen: string
+}
+
 export interface CalculatorHowTo {
   title: string
   steps: CalculatorHowToStep[]
@@ -53,6 +72,11 @@ export interface CalculatorContent {
     paragraphs: string[]
   }
   howTo: CalculatorHowTo
+  /**
+   * Shown under the intro, on the handful of calculators that sit next to a
+   * near neighbour. Omitted everywhere else.
+   */
+  comparisons?: CalculatorComparison[]
   formulas: CalculatorFormula[]
   /** Heading for the formulas section. Defaults to "Formulas". */
   formulasTitle?: string

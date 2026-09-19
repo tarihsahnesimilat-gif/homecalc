@@ -33,6 +33,17 @@ export const daysBetweenContent: CalculatorContent = {
       },
     ],
   },
+  comparisons: [
+    {
+      slug: 'date-difference-calculator',
+      summary:
+        'Both walk the same calendar and agree exactly. What differs is the shape of the answer: one number here, a years-months-days breakdown there.',
+      useThisWhen:
+        'the figure has to be something you can count against — a notice period, a deadline, days of interest, or nights against days for a booking.',
+      useOtherWhen:
+        'you want the span described the way people say it out loud, as so many years, months and days.',
+    },
+  ],
   formulasTitle: 'How the calculation works',
   formulas: [
     {

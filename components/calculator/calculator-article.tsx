@@ -1,4 +1,5 @@
 import type { CalculatorContent } from '@/lib/calculator-content/types'
+import { CalculatorComparisons } from './calculator-comparison'
 
 interface CalculatorArticleProps {
   content: CalculatorContent
@@ -10,7 +11,7 @@ interface CalculatorArticleProps {
  * new markup.
  */
 export function CalculatorArticle({ content }: CalculatorArticleProps) {
-  const { intro, howTo, formulas, examples } = content
+  const { intro, comparisons, howTo, formulas, examples } = content
 
   return (
     <article className="mt-12 max-w-none">
@@ -27,6 +28,10 @@ export function CalculatorArticle({ content }: CalculatorArticleProps) {
             ))}
           </div>
         </section>
+      )}
+
+      {comparisons && comparisons.length > 0 && (
+        <CalculatorComparisons comparisons={comparisons} />
       )}
 
       {howTo.steps.length > 0 && (

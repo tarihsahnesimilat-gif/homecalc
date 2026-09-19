@@ -240,6 +240,45 @@ test('rendered: the YMYL note sits under the result, not at the foot of the page
   }
 })
 
+test('rendered: neighbouring calculators link to each other in both directions', { skip: !hasBuild }, () => {
+  for (const calculator of liveCalculators) {
+    const comparisons = calculatorContent[calculator.slug].comparisons ?? []
+    const html = read(`calculators/${calculator.slug}.html`)
+
+    if (comparisons.length === 0) {
+      assert.ok(
+        !html.includes('id="comparison-heading"'),
+        `${calculator.slug} renders a comparison section with nothing in it`,
+      )
+      continue
+    }
+
+    assert.ok(
+      html.includes('id="comparison-heading"'),
+      `${calculator.slug} does not render its comparison section`,
+    )
+
+    for (const comparison of comparisons) {
+      assert.ok(
+        html.includes(`href="/calculators/${comparison.slug}"`),
+        `${calculator.slug} does not link across to ${comparison.slug}`,
+      )
+      assert.ok(html.includes(comparison.summary), `${calculator.slug}: summary is not rendered`)
+      assert.ok(
+        html.includes(comparison.useThisWhen) && html.includes(comparison.useOtherWhen),
+        `${calculator.slug}: the when-to-use clauses are not rendered`,
+      )
+
+      // The other side has to link back, or the pair is only half separated.
+      const back = read(`calculators/${comparison.slug}.html`)
+      assert.ok(
+        back.includes(`href="/calculators/${calculator.slug}"`),
+        `${comparison.slug} does not link back to ${calculator.slug}`,
+      )
+    }
+  }
+})
+
 test('rendered: no page contains a dead anchor', { skip: !hasBuild }, () => {
   for (const page of allPages()) {
     assert.ok(!read(page).includes('href="#"'), `${page} contains href="#"`)

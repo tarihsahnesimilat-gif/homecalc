@@ -38,6 +38,17 @@ export const mortgageContent: CalculatorContent = {
       },
     ],
   },
+  comparisons: [
+    {
+      slug: 'loan-payment-calculator',
+      summary:
+        'The payment maths is identical. The inputs are not: this page starts from a property price and a deposit and works out the amount borrowed for you.',
+      useThisWhen:
+        'you are pricing a home purchase, know the asking price and what you can put down, and want the loan portion of the monthly cost.',
+      useOtherWhen:
+        'the sum being borrowed is already settled — a car loan, a personal loan, a balance you are refinancing — and no deposit comes off a price first.',
+    },
+  ],
   formulasTitle: 'Mortgage formulas',
   formulas: [
     {

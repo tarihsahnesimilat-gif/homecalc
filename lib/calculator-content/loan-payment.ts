@@ -36,6 +36,26 @@ export const loanPaymentContent: CalculatorContent = {
       },
     ],
   },
+  comparisons: [
+    {
+      slug: 'mortgage-calculator',
+      summary:
+        'Both amortise a fixed-rate balance in the same way. This one takes the amount borrowed directly instead of deriving it from a price and a deposit.',
+      useThisWhen:
+        'you know the figure being borrowed and want the instalment it produces at a given rate and term.',
+      useOtherWhen:
+        'you are working from a property price with a deposit to subtract, which is the step that page adds.',
+    },
+    {
+      slug: 'loan-interest-calculator',
+      summary:
+        'One loan, two questions. This page answers what leaves your account each month; that one answers what the borrowing costs you in total.',
+      useThisWhen:
+        'you are budgeting, or comparing offers by what each would demand of you every month.',
+      useOtherWhen:
+        'you want the cost side instead — the interest across the whole term, and how little of an early payment reaches the balance.',
+    },
+  ],
   formulasTitle: 'Loan payment formulas',
   formulas: [
     {

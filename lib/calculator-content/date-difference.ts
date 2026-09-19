@@ -35,6 +35,17 @@ export const dateDifferenceContent: CalculatorContent = {
       },
     ],
   },
+  comparisons: [
+    {
+      slug: 'days-between-dates-calculator',
+      summary:
+        'The same span, read two ways. A breakdown in years and months is how people describe a gap; a plain day count is what you calculate with.',
+      useThisWhen:
+        'you want the gap in the form someone would say it — three years, two months and four days between two events.',
+      useOtherWhen:
+        'you need a single number to work from, since years and months have no fixed length and will not convert cleanly into days.',
+    },
+  ],
   formulasTitle: 'How the calculation works',
   formulas: [
     {

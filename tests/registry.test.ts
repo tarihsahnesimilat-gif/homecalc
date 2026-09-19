@@ -214,6 +214,100 @@ test('disclaimers: health notes name their limits, finance notes name the variab
   }
 })
 
+/**
+ * Calculators that sit next to a near neighbour: without an explicit
+ * distinction the pair reads as two versions of one tool, to a visitor who
+ * landed on the wrong one and to a search engine choosing between them.
+ */
+const OVERLAPPING_PAIRS: [string, string][] = [
+  ['days-between-dates-calculator', 'date-difference-calculator'],
+  ['mortgage-calculator', 'loan-payment-calculator'],
+  ['loan-interest-calculator', 'loan-payment-calculator'],
+]
+
+test('comparisons: each overlapping pair points at the other, both ways', () => {
+  for (const [a, b] of OVERLAPPING_PAIRS) {
+    for (const [self, other] of [
+      [a, b],
+      [b, a],
+    ]) {
+      const comparisons = calculatorContent[self].comparisons ?? []
+      const match = comparisons.find((comparison) => comparison.slug === other)
+      assert.ok(match, `${self} does not distinguish itself from ${other}`)
+    }
+  }
+})
+
+test('comparisons: every one names a live calculator that is not itself', () => {
+  for (const calculator of liveCalculators) {
+    const comparisons = calculatorContent[calculator.slug].comparisons ?? []
+    const slugs = comparisons.map((comparison) => comparison.slug)
+
+    assert.equal(new Set(slugs).size, slugs.length, `${calculator.slug} repeats a comparison`)
+
+    for (const comparison of comparisons) {
+      assert.notEqual(comparison.slug, calculator.slug, `${calculator.slug} compares to itself`)
+      const other = liveCalculators.find(
+        (entry: CalculatorDefinition) => entry.slug === comparison.slug,
+      )
+      assert.ok(other, `${calculator.slug} compares to "${comparison.slug}", which is not live`)
+    }
+  }
+})
+
+test('comparisons: each side says what separates them and when to leave', () => {
+  for (const calculator of liveCalculators) {
+    for (const comparison of calculatorContent[calculator.slug].comparisons ?? []) {
+      const where = `${calculator.slug} -> ${comparison.slug}`
+
+      for (const [field, text] of Object.entries({
+        summary: comparison.summary,
+        useThisWhen: comparison.useThisWhen,
+        useOtherWhen: comparison.useOtherWhen,
+      })) {
+        assert.ok(text.trim().length > 0, `${where}: ${field} is empty`)
+        assert.ok(
+          text.split(/\s+/).length >= 10,
+          `${where}: ${field} is too short to distinguish anything`,
+        )
+      }
+
+      // The two clauses must send the reader in opposite directions.
+      assert.notEqual(
+        comparison.useThisWhen,
+        comparison.useOtherWhen,
+        `${where}: both clauses say the same thing`,
+      )
+    }
+  }
+})
+
+test('comparisons: neither side of a pair repeats the other, or the page it sits on', () => {
+  const seen = new Map<string, string>()
+
+  for (const calculator of liveCalculators) {
+    const content = calculatorContent[calculator.slug]
+    const pageCopy = [
+      ...content.intro.paragraphs,
+      ...content.howTo.steps.map((step) => step.description),
+      ...content.faqs.map((faq) => faq.answer),
+    ]
+
+    for (const comparison of content.comparisons ?? []) {
+      for (const text of [comparison.summary, comparison.useThisWhen, comparison.useOtherWhen]) {
+        const owner = seen.get(text)
+        assert.equal(owner, undefined, `${calculator.slug} repeats copy from ${owner}`)
+        seen.set(text, `${calculator.slug} -> ${comparison.slug}`)
+
+        assert.ok(
+          !pageCopy.includes(text),
+          `${calculator.slug}: the comparison repeats a paragraph already on the page`,
+        )
+      }
+    }
+  }
+})
+
 test('registry: category counts are derived, not hardcoded', () => {
   const counts: Record<string, number> = Object.fromEntries(
     categoriesWithCounts.map((category) => [category.id, category.liveCount]),
