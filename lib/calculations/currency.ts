@@ -8,10 +8,10 @@ export interface Currency {
 /**
  * Currency codes offered in the dropdowns.
  *
- * These are labels only. **No exchange rates are stored anywhere in this
- * project and none are fetched.** Rates move constantly, and a rate baked into
- * a static site would be wrong within hours while still looking authoritative,
- * so the rate is something the user supplies from a source they trust.
+ * Codes and names only — no rate is ever stored here. Rates are fetched per
+ * pair at the moment they are needed (see `lib/rates.ts`), because a figure
+ * baked into the source would be wrong within a day while still looking
+ * authoritative. Every code below is one Frankfurter publishes.
  */
 export const CURRENCIES: readonly Currency[] = [
   { code: 'USD', name: 'US Dollar' },
@@ -61,30 +61,33 @@ export function calculateCurrency(
   }
 }
 
+/**
+ * Turns the raw amount and a fetched rate into a result.
+ *
+ * `rate` is null while the rate is still being fetched, or after a fetch
+ * failed. Both cases are `empty` — the form reports the failure itself, and no
+ * substitute rate is ever invented to fill the gap.
+ */
 export function evaluateCurrency(
   rawAmount: string,
   from: string,
   to: string,
-  rawRate: string,
+  rate: number | null,
 ): CalculatorOutcome<CurrencyResult> {
-  if (from === to) {
-    if (anyBlank(rawAmount)) return { state: 'empty' }
+  if (anyBlank(rawAmount)) return { state: 'empty' }
 
-    const parsedAmount = parseNumbers(rawAmount)
-    if (!parsedAmount) return invalid('Please enter a number.')
-    if (parsedAmount[0] < 0) return invalid('The amount cannot be negative.')
+  const parsedAmount = parseNumbers(rawAmount)
+  if (!parsedAmount) return invalid('Please enter a number.')
 
-    return ok(calculateCurrency(parsedAmount[0], from, to, 1))
-  }
-
-  if (anyBlank(rawAmount, rawRate)) return { state: 'empty' }
-
-  const parsed = parseNumbers(rawAmount, rawRate)
-  if (!parsed) return invalid('Please enter numbers only.')
-
-  const [amount, rate] = parsed
+  const [amount] = parsedAmount
   if (amount < 0) return invalid('The amount cannot be negative.')
-  if (rate <= 0) return invalid('The exchange rate must be greater than zero.')
+
+  if (from === to) return ok(calculateCurrency(amount, from, to, 1))
+
+  if (rate === null) return { state: 'empty' }
+  if (!Number.isFinite(rate) || rate <= 0) {
+    return invalid('The exchange rate is not usable.')
+  }
 
   return ok(calculateCurrency(amount, from, to, rate))
 }

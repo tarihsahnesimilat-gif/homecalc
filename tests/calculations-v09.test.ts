@@ -273,8 +273,8 @@ test('debt payoff: validation', () => {
 })
 
 // ----------------------------------------------------------- 37. Currency
-test('currency: a simple conversion at a supplied rate', () => {
-  const result = outcomeValue(evaluateCurrency('100', 'USD', 'EUR', '0.92'))!
+test('currency: a simple conversion at a fetched rate', () => {
+  const result = outcomeValue(evaluateCurrency('100', 'USD', 'EUR', 0.92))!
   close(result.convertedAmount, 92)
   close(result.rate, 0.92)
   close(result.inverseRate, 1 / 0.92, 1e-9)
@@ -282,23 +282,32 @@ test('currency: a simple conversion at a supplied rate', () => {
 })
 
 test('currency: the same currency is always 1:1', () => {
-  const result = outcomeValue(evaluateCurrency('100', 'USD', 'USD', ''))!
+  const result = outcomeValue(evaluateCurrency('100', 'USD', 'USD', null))!
   close(result.convertedAmount, 100)
   close(result.rate, 1)
   assert.equal(result.sameCurrency, true)
 })
 
 test('currency: decimal amounts and rates', () => {
-  const result = outcomeValue(evaluateCurrency('249.99', 'GBP', 'JPY', '188.4523'))!
+  const result = outcomeValue(evaluateCurrency('249.99', 'GBP', 'JPY', 188.4523))!
   close(result.convertedAmount, 249.99 * 188.4523, 1e-9)
 })
 
-test('currency: a missing or invalid rate is rejected', () => {
-  assert.equal(evaluateCurrency('100', 'USD', 'EUR', '').state, 'empty')
-  assert.equal(evaluateCurrency('100', 'USD', 'EUR', '0').state, 'invalid')
-  assert.equal(evaluateCurrency('100', 'USD', 'EUR', '-1').state, 'invalid')
-  assert.equal(evaluateCurrency('100', 'USD', 'EUR', 'abc').state, 'invalid')
-  assert.equal(evaluateCurrency('-5', 'USD', 'EUR', '0.92').state, 'invalid')
+test('currency: a missing or unusable rate is never guessed at', () => {
+  // No rate yet -- still loading, or the lookup failed. Either way the result
+  // stays empty rather than falling back to a stored figure.
+  assert.equal(evaluateCurrency('100', 'USD', 'EUR', null).state, 'empty')
+  assert.equal(evaluateCurrency('100', 'USD', 'EUR', 0).state, 'invalid')
+  assert.equal(evaluateCurrency('100', 'USD', 'EUR', -1).state, 'invalid')
+  assert.equal(evaluateCurrency('100', 'USD', 'EUR', Number.NaN).state, 'invalid')
+  assert.equal(evaluateCurrency('-5', 'USD', 'EUR', 0.92).state, 'invalid')
+  assert.equal(evaluateCurrency('abc', 'USD', 'EUR', 0.92).state, 'invalid')
+})
+
+test('currency: the amount alone decides whether there is anything to show', () => {
+  assert.equal(evaluateCurrency('', 'USD', 'EUR', 0.92).state, 'empty')
+  // Same currency needs no rate at all, so it resolves while one is loading.
+  assert.equal(evaluateCurrency('100', 'USD', 'USD', null).state, 'ok')
 })
 
 test('currency: the code list is well formed and holds no rates', () => {

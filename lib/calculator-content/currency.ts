@@ -2,15 +2,15 @@ import type { CalculatorContent } from './types.ts'
 
 export const currencyContent: CalculatorContent = {
   slug: 'currency-converter',
-  seoTitle: 'Currency Converter — Convert Using Your Own Exchange Rate',
+  seoTitle: 'Currency Converter — Latest Published Rates',
   seoDescription:
-    'Free currency converter. Enter an amount and the exchange rate from a source you trust to convert between currencies. No stored or live rates are used.',
+    'Free currency converter using the latest published European Central Bank rates from Frankfurter. Shows the rate, the date it was set, and why bank rates differ.',
   intro: {
     title: 'About converting currency',
-    lead: 'Convert an amount between currencies using an exchange rate you supply.',
+    lead: 'Convert an amount between currencies at the latest published exchange rate.',
     paragraphs: [
-      'This converter does not fetch live rates, and it does not store any. That is a deliberate choice rather than a limitation to work around. Exchange rates move constantly, and a rate baked into a static page would be wrong within hours while still looking authoritative — which is worse than no rate at all.',
-      'Instead, you supply the rate from a source you trust: your bank, your card provider, or a live market quote. The calculator does the arithmetic and shows the inverse rate so you can sanity-check the direction.',
+      'Rates come from Frankfurter, a free service that publishes the European Central Bank reference rates. Pick a pair and the rate for it is fetched and applied, with both the rate and the date it was published shown under the result.',
+      'Those reference rates are set once per working day rather than continuously, so this is the latest available figure rather than a live market quote. On a quiet day the difference is small; around news or over a weekend it can be larger, which is why the date is on the page rather than hidden behind it.',
       'Bear in mind that the rate you actually receive is rarely the mid-market rate. Banks and card providers add a margin, and may charge a separate fee on top, so budget a little above whatever this shows.',
     ],
   },
@@ -24,17 +24,17 @@ export const currencyContent: CalculatorContent = {
       {
         title: 'Choose the two currencies',
         description:
-          'These are labels for the result. Picking the same currency twice converts at 1:1.',
+          'The rate for that pair is looked up as soon as you pick it. Selecting the same currency twice converts at 1:1 with no lookup at all.',
       },
       {
-        title: 'Enter the exchange rate',
+        title: 'Check the rate and its date',
         description:
-          'How much of the target currency one unit of the source buys. If 1 USD buys 0.92 EUR, enter 0.92.',
+          'Both sit under the result. The date tells you which daily publication the figure came from, which matters most over weekends and holidays.',
       },
       {
         title: 'Check the inverse',
         description:
-          'The inverse rate is shown alongside. If it looks wrong, the rate is probably the wrong way round.',
+          'The inverse rate is shown alongside. If it looks wrong, the pair is probably the wrong way round.',
       },
     ],
   },
@@ -61,12 +61,12 @@ export const currencyContent: CalculatorContent = {
   examples: [
     {
       title: 'Dollars to euros',
-      description: 'Converting 100 USD at a rate of 0.92.',
+      description: 'Converting 100 USD at a published rate of 0.92.',
       inputs: [
         { label: 'Amount', value: '100' },
         { label: 'From', value: 'USD' },
         { label: 'To', value: 'EUR' },
-        { label: 'Rate', value: '0.92' },
+        { label: 'Rate applied', value: '0.92' },
       ],
       result: '92.00 EUR.',
     },
@@ -78,7 +78,7 @@ export const currencyContent: CalculatorContent = {
         { label: 'From', value: 'USD' },
         { label: 'To', value: 'USD' },
       ],
-      result: '100.00 — converted at 1:1 whatever rate is entered.',
+      result: '100.00 — converted at 1:1, with no rate involved.',
     },
     {
       title: 'A large rate',
@@ -87,21 +87,21 @@ export const currencyContent: CalculatorContent = {
         { label: 'Amount', value: '50' },
         { label: 'From', value: 'GBP' },
         { label: 'To', value: 'JPY' },
-        { label: 'Rate', value: '188.45' },
+        { label: 'Rate applied', value: '188.45' },
       ],
       result: '9,422.50 JPY.',
     },
   ],
   faqs: [
     {
-      question: 'Why does this not fetch live exchange rates?',
+      question: 'Where do these exchange rates come from?',
       answer:
-        'Because a static page cannot keep them current, and a stale rate presented as live is misleading. Rates move continuously, so the honest design is to let you supply one from a source you trust and can check.',
+        'From Frankfurter, a free service built on the European Central Bank reference rates. The rate applied and the date it was published are both shown under the result, so how current the figure is stays visible.',
     },
     {
-      question: 'Where should I get a rate?',
+      question: 'Is this a live, real-time rate?',
       answer:
-        'For a rough figure, any major search engine or financial site gives the current mid-market rate. For what you will actually pay, check your own bank or card provider, since their rate includes a margin.',
+        'No. The reference rates are published once per working day, so this is the latest available figure rather than a market quote. Movement during the day, and over weekends and holidays, is not reflected in it.',
     },
     {
       question: 'Why is the rate I get worse than the one I looked up?',
@@ -109,14 +109,14 @@ export const currencyContent: CalculatorContent = {
         'Published rates are usually mid-market — the midpoint between buying and selling. Retail providers add a margin, often 1% to 4%, and may add a fixed fee as well. Cash exchange at an airport is typically worse still.',
     },
     {
-      question: 'Which way round should the rate go?',
+      question: 'Which way round is the rate applied?',
       answer:
-        'Enter how much of the target currency one unit of the source buys. Converting USD to EUR at 0.92 means one dollar buys 0.92 euros. The inverse shown beneath is the quickest way to confirm you have it the right way round.',
+        'It is how much of the target currency one unit of the source buys. Converting USD to EUR at 0.92 means one dollar buys 0.92 euros. The inverse shown beneath the result is the quickest way to confirm the direction.',
     },
     {
-      question: 'Are any rates stored in this site?',
+      question: 'What happens if the rate cannot be loaded?',
       answer:
-        'None. The currency list holds codes and names only. Nothing about exchange rates is stored, cached or fetched anywhere in the project.',
+        'The calculator says so and shows no result. It never falls back to a stored or estimated rate, because a plausible-looking figure from an unknown moment is worse than no figure at all.',
     },
   ],
   tip: {
