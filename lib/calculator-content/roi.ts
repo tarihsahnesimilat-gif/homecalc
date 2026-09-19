@@ -107,6 +107,8 @@ export const roiContent: CalculatorContent = {
         'ROI divides profit by what was invested; profit margin divides it by revenue. ROI measures how hard your capital worked, margin measures how much of each sale you keep.',
     },
   ],
+  disclaimer:
+    'An estimate from the figures you supply. A real return depends on fees, taxes, timing and risks that a single percentage cannot show, and a past or projected return promises nothing about a future one. Educational information, not investment advice.',
   tip: {
     title: 'A percentage without a period is incomplete',
     body: 'Always note how long the money was invested. Two identical ROI figures over one year and ten years describe very different results.',

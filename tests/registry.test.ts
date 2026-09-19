@@ -105,17 +105,26 @@ test('registry: every live calculator has content', () => {
  * and one that does not must stay clean, so the notes keep their weight.
  */
 const YMYL_DISCLAIMERS = [
+  // Health: every calculator that turns a measurement into a health figure.
   'bmi-calculator',
   'bmr-calculator',
   'calorie-calculator',
   'calorie-deficit-calculator',
   'pace-calculator',
+  // Money: borrowing, and anything that projects a balance forward on an
+  // assumed rate. Arithmetic on figures the user already knows -- a tip, a
+  // discount, sales tax, a margin -- carries no assumption to disclaim and
+  // deliberately has no note.
   'mortgage-calculator',
   'loan-payment-calculator',
   'loan-interest-calculator',
   'debt-payoff-calculator',
   'investment-calculator',
   'savings-calculator',
+  'compound-interest-calculator',
+  'simple-interest-calculator',
+  'future-value-calculator',
+  'roi-calculator',
 ]
 
 test('disclaimers: every YMYL calculator carries one, and nothing else does', () => {
@@ -177,6 +186,10 @@ test('disclaimers: health notes name their limits, finance notes name the variab
     'debt-payoff-calculator',
     'investment-calculator',
     'savings-calculator',
+    'compound-interest-calculator',
+    'simple-interest-calculator',
+    'future-value-calculator',
+    'roi-calculator',
   ]
 
   for (const slug of [...health, 'pace-calculator']) {

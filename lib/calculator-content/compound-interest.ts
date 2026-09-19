@@ -119,6 +119,8 @@ export const compoundInterestContent: CalculatorContent = {
         'No. The result is the mathematical growth of the figures you enter. Fees and tax reduce what you keep, and inflation reduces what it buys, so the real outcome is usually lower.',
     },
   ],
+  disclaimer:
+    'This is an estimate built on one fixed rate held for the whole period, which no real account offers. Compounding frequency, fees, tax treatment and rate changes all move the outcome. Educational information, not financial advice.',
   tip: {
     title: 'Time does more than rate',
     body: 'Doubling the term usually adds more than doubling the rate, because the growth is exponential in time. Starting earlier is the single biggest lever in this formula.',

@@ -122,6 +122,8 @@ export const futureValueContent: CalculatorContent = {
         'It is the standard convention for discounting, and it keeps the two directions exact inverses. For a specific compounding frequency, the Compound Interest calculator handles annual through to daily.',
     },
   ],
+  disclaimer:
+    'A projection of the assumptions you enter rather than a prediction of what will happen. Real returns vary, inflation erodes what a future sum will buy, and fees and taxes reduce it further. Educational information, not financial advice.',
   tip: {
     title: 'Compare at the same date',
     body: 'Never compare an amount today with an amount years away as they stand. Bring both to the same point in time first — that is the whole purpose of discounting.',

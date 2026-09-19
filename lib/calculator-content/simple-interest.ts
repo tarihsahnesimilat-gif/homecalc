@@ -133,6 +133,8 @@ export const simpleInterestContent: CalculatorContent = {
         'No. It calculates interest on the figures you enter. Fees, tax on interest, and the effect of inflation on what the money is worth all sit outside the formula.',
     },
   ],
+  disclaimer:
+    'An estimate of interest on a principal that never changes, which is how few real agreements work. Fees, charges and the way a lender applies interest all alter what is actually owed. Educational information, not financial advice.',
   tip: {
     title: 'Match the rate to the period',
     body: 'The most common mistake is pairing an annual rate with a period in months. Choose the Months unit and the conversion is handled for you.',
