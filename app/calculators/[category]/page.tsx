@@ -5,6 +5,8 @@ import { notFound } from 'next/navigation'
 
 import { Breadcrumbs } from '@/components/calculator/breadcrumbs'
 import { CalculatorCard } from '@/components/calculator/calculator-card'
+import { CalculatorFaq } from '@/components/calculator/calculator-faq'
+import { CategoryEditorial } from '@/components/calculator/category-editorial'
 import { SiteHeader } from '@/components/site-header'
 import {
   CALCULATORS_DIRECTORY_PATH,
@@ -14,6 +16,7 @@ import {
   getCategory,
   getLiveCalculatorsByCategory,
 } from '@/lib/calculators'
+import { getCategoryContent } from '@/lib/category-content'
 import { OG_IMAGE, absoluteUrl } from '@/lib/site'
 
 interface CategoryPageProps {
@@ -65,6 +68,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
   if (!category) notFound()
 
   const calculators = getLiveCalculatorsByCategory(category.id)
+  const content = getCategoryContent(category.id)
   const path = categoryHref(category.id)
 
   const structuredData = {
@@ -116,6 +120,16 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
             <CalculatorCard key={calculator.slug} calculator={calculator} showCategory={false} />
           ))}
         </div>
+
+        {content && (
+          <>
+            <CategoryEditorial content={content} />
+            <CalculatorFaq
+              faqs={content.faqs}
+              title={`${category.name}: frequently asked questions`}
+            />
+          </>
+        )}
 
         <section aria-labelledby="other-categories" className="mt-12 border-t border-border pt-8">
           <h2 id="other-categories" className="text-lg font-bold text-primary">

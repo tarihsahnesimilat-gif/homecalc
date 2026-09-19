@@ -11,6 +11,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 
 import { liveCalculators, categoriesWithLiveCalculators } from '../lib/calculators.ts'
+import { getCategoryContent } from '../lib/category-content.ts'
 import { INFO_ROUTES, LEGAL_ROUTES } from '../lib/routes.ts'
 
 const BUILD_DIR = path.join(process.cwd(), '.next', 'server', 'app')
@@ -83,10 +84,25 @@ test('rendered: calculator pages carry three distinct JSON-LD blocks', { skip: !
   }
 })
 
-test('rendered: directory and category pages are CollectionPages', { skip: !hasBuild }, () => {
-  for (const page of ['calculators.html', ...categoryPages()]) {
+test('rendered: the directory is a CollectionPage', { skip: !hasBuild }, () => {
+  const types = jsonLdTypes(read('calculators.html'))
+  assert.deepEqual([...types].sort(), ['BreadcrumbList', 'CollectionPage'])
+})
+
+/**
+ * Category pages carry a third block: their editorial FAQs, marked up the same
+ * way the calculator pages mark up theirs, and only ever mirroring questions
+ * that are visible on the page.
+ */
+test('rendered: category pages are CollectionPages with marked-up FAQs', { skip: !hasBuild }, () => {
+  for (const page of categoryPages()) {
     const types = jsonLdTypes(read(page))
-    assert.deepEqual([...types].sort(), ['BreadcrumbList', 'CollectionPage'], `${page}`)
+    assert.deepEqual(
+      [...types].sort(),
+      ['BreadcrumbList', 'CollectionPage', 'FAQPage'],
+      `${page} has ${types.join(', ')}`,
+    )
+    assert.equal(new Set(types).size, types.length, `${page} repeats a JSON-LD entity`)
   }
 })
 
@@ -134,6 +150,36 @@ test('rendered: each category page links to its own calculators only', { skip: !
       }
     }
     assert.ok(html.includes('href="/calculators"'), `${category.id} page does not link back`)
+  }
+})
+
+test('rendered: every category page carries its editorial sections', { skip: !hasBuild }, () => {
+  for (const category of categoriesWithLiveCalculators) {
+    const html = read(`calculators/${category.id}.html`)
+    const content = getCategoryContent(category.id)!
+
+    for (const id of [
+      'category-overview-heading',
+      'category-chooser-heading',
+      'category-interpreting-heading',
+      'category-mistakes-heading',
+      'faq-heading',
+    ]) {
+      assert.ok(html.includes(`id="${id}"`), `${category.id} page is missing #${id}`)
+    }
+
+    for (const item of content.chooser.items) {
+      assert.ok(
+        html.includes(`href="/calculators/${item.slug}"`),
+        `${category.id} page does not link to ${item.slug}`,
+      )
+    }
+
+    assert.equal(
+      count(html, /<details/g),
+      content.faqs.length,
+      `${category.id} page should render one details block per FAQ`,
+    )
   }
 })
 

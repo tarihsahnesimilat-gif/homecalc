@@ -18,6 +18,7 @@ import {
   liveCalculators,
   searchCalculators,
 } from '../lib/calculators.ts'
+import { categoryContent, getCategoryContent } from '../lib/category-content.ts'
 import { INFO_ROUTES, LEGAL_ROUTES, publicRoutes } from '../lib/routes.ts'
 
 const EXPECTED_CATEGORY_PAGES = [
@@ -183,6 +184,115 @@ test('categories: no planned calculator is listed on a category page', () => {
     for (const calculator of inCategory) {
       assert.equal(calculator.status, 'live', `${calculator.slug} is planned`)
     }
+  }
+})
+
+// ------------------------------------------------- Category page content
+/**
+ * A category page that is only a heading and a grid of cards is thin content:
+ * nothing to read, nothing to rank, nothing for an ad network's reviewer to
+ * judge. These tests hold the written half of each page to a floor.
+ */
+const MIN_EDITORIAL_WORDS = 150
+
+const prose = (content: ReturnType<typeof getCategoryContent>) => [
+  ...content!.overview.paragraphs,
+  ...content!.interpreting.paragraphs,
+  ...content!.mistakes.items.map((mistake) => mistake.description),
+]
+
+const wordCount = (parts: string[]) =>
+  parts.join(' ').split(/\s+/).filter(Boolean).length
+
+test('content: every category page has editorial content', () => {
+  for (const category of categoriesWithLiveCalculators) {
+    assert.ok(getCategoryContent(category.id), `${category.id} has no editorial content`)
+  }
+  assert.equal(categoryContent.length, categoriesWithLiveCalculators.length)
+})
+
+test('content: each category carries enough original prose', () => {
+  for (const content of categoryContent) {
+    const words = wordCount(prose(content))
+    assert.ok(
+      words >= MIN_EDITORIAL_WORDS,
+      `${content.id} has ${words} words of editorial content, under ${MIN_EDITORIAL_WORDS}`,
+    )
+    assert.ok(content.mistakes.items.length >= 3, `${content.id} lists fewer than 3 mistakes`)
+  }
+})
+
+test('content: no paragraph is shared between two categories', () => {
+  // Duplicated copy across category pages is the failure mode this content
+  // exists to avoid, so a shared sentence should fail loudly.
+  const seen = new Map<string, string>()
+
+  for (const content of categoryContent) {
+    for (const paragraph of [...prose(content), ...content.faqs.map((faq) => faq.answer)]) {
+      const owner = seen.get(paragraph)
+      assert.equal(owner, undefined, `${content.id} repeats copy from ${owner}`)
+      seen.set(paragraph, content.id)
+    }
+  }
+})
+
+test('content: every category has three to five genuine FAQs', () => {
+  const questions = new Set<string>()
+
+  for (const content of categoryContent) {
+    assert.ok(
+      content.faqs.length >= 3 && content.faqs.length <= 5,
+      `${content.id} has ${content.faqs.length} FAQs`,
+    )
+
+    for (const faq of content.faqs) {
+      assert.ok(faq.question.endsWith('?'), `${content.id}: "${faq.question}" is not a question`)
+      assert.ok(!questions.has(faq.question), `${content.id} repeats the question "${faq.question}"`)
+      assert.ok(
+        faq.answer.split(/\s+/).length >= 15,
+        `${content.id}: the answer to "${faq.question}" is too short to be useful`,
+      )
+      questions.add(faq.question)
+    }
+  }
+})
+
+test('content: every internal link points at a live calculator', () => {
+  for (const content of categoryContent) {
+    const slugs = content.chooser.items.map((item) => item.slug)
+    assert.ok(slugs.length >= 3, `${content.id} links to fewer than 3 calculators`)
+    assert.equal(new Set(slugs).size, slugs.length, `${content.id} links the same calculator twice`)
+
+    for (const slug of slugs) {
+      const calculator = liveCalculators.find((c: CalculatorDefinition) => c.slug === slug)
+      assert.ok(calculator, `${content.id} links to "${slug}", which is not a live calculator`)
+    }
+  }
+})
+
+test('content: a category page links to most of its own calculators', () => {
+  // Cross-category links are allowed -- the concrete calculator is genuinely a
+  // home project tool -- but a category should mostly point at its own.
+  for (const content of categoryContent) {
+    const own = getLiveCalculatorsByCategory(content.id).map(
+      (calculator: CalculatorDefinition) => calculator.slug,
+    )
+    const linkedOwn = content.chooser.items.filter((item) => own.includes(item.slug))
+    assert.ok(
+      linkedOwn.length >= Math.min(own.length, 3),
+      `${content.id} links to only ${linkedOwn.length} of its own calculators`,
+    )
+  }
+})
+
+test('content: the YMYL categories carry a disclaimer', () => {
+  for (const id of ['finance', 'health'] as const) {
+    const content = getCategoryContent(id)!
+    assert.ok(content.disclaimer, `${id} has no disclaimer`)
+    assert.ok(
+      /not .*(advice|a substitute)/i.test(content.disclaimer!),
+      `${id}: the disclaimer does not say what it is not`,
+    )
   }
 })
 
